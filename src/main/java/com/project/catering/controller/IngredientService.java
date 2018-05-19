@@ -21,9 +21,4 @@ public class IngredientService {
 		return ingredientRepository.findAll();
 	}
 	
-/*	public Iterable<Ingredient> getIngredientsByType() {
-		Iterable<Ingredient> ingredients = ingredientRepository.findByTypeOrderByNameAsc("");
-		return ingredients;
-	  }
-*/	
 }
