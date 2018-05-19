@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catering Project</title>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script src="js/bootstrap.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+
+	function getAllIngredients() {
+		getDataList("ingredient");
+		
+	};
+
+	function postData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				document.getElementById("demo").innerHTML = this.responseText;
+			}
+		};
+		xhttp.open("POST", "http://localhost:8081/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	}
+	
+	function getDataList(api) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		var container = document.getElementById("Container");
+		
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				alert(this.responseText);
+				var table = document.createElement("Table");
+				for (x in myObj) {
+					var row = document.createElement("TR");
+					for(y in myObj[x]) {
+						alert(y.lenght);
+						var col = document.createElement("TD");
+						var textNode = createTextNode("deneme");
+						col.appendChild(textNode);
+						row.appendChild(col);
+					};
+					table.appendChild(row);
+				};
+				container.appendChild(table);
+				document.body.appendChild(table);
+				alert("deneme");
+			};
+		};
+		xhttp.open("GET", "http://localhost:8081/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	function jojo(){
+		var jo = document.getElementsByTagName("html");
+		console.log(jo);
+		jo["0"].children[1].children["0"].style.backgroundColor ="green";
+	}
+</script>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	  <a class="navbar-brand" href="#">Navbar</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+	  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+	    <ul class="navbar-nav">
+	      <li class="nav-item active">
+	        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#">Features</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link" href="#" onclick="getAllIngredients()">Ingredients</a>
+	      </li>
+	      <li class="nav-item dropdown">
+	        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          Ingredients
+	        </a>
+	        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+	          <a class="dropdown-item" href="#">Action</a>
+	          <a class="dropdown-item" href="#">Another action</a>
+	          <a class="dropdown-item" href="#">Something else here</a>
+	        </div>
+	      </li>
+	    </ul>
+	  </div>
+	</nav>
+	<div class="container-fluid">
+        <button onclick="getAllIngredients()">SS</button>
+    </div>
+	<div id="Container" class="container-fluid">
+        
+    </div>
+</body>
+</html>
