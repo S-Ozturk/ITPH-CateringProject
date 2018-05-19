@@ -13,7 +13,7 @@ public class Ingredient {
 	private long id;
 	
 	private String name, type, unitType;
-		private double caloriePerUnit;
+	private double caloriePerUnit;
 	
 	public long getId() {
 		return id;
@@ -45,6 +45,5 @@ public class Ingredient {
 	public void setCaloriePerUnit(double caloriePerUnit) {
 		this.caloriePerUnit = caloriePerUnit;
 	}
-	
 	
 }
