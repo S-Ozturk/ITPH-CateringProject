@@ -19,6 +19,9 @@
 		button2.onclick="";
 		button2.textContent="";
 		button2.hidden=true;
+		var dropdownSort =document.getElementById("dropdownSort");
+		button2.innerHTML="";
+		button2.hidden=true;
 	};
 	
 	function changeToIngredient() {
@@ -37,8 +40,22 @@
 		
 	};
 	
+	function getAllIngredientsSorted() {
+		var key = document.getElementById("dropdownSort").value;
+		var desc = document.getElementById("dropdownSortDesc").value;
+		if(desc=="Descending")
+			getDataListSorted("ingredient",key,true);
+		else
+			getDataListSorted("ingredient",key,false);
+		
+	};
+	
 	function postIngredient() {
 		postData("ingredient",'{"name":"Onion","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.10}');
+		postData("ingredient",'{"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.40}');
+		postData("ingredient",'{"name":"Beef Meat Ball","type":"Vegetable","unitType":"gr","caloriePerUnit":0.15}');
+		postData("ingredient",'{"name":"Black Pepper","type":"Spice","unitType":"Piece","caloriePerUnit":0.01}');
+		postData("ingredient",'{"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}');
 		
 	};
 
@@ -55,7 +72,51 @@
 	}
 	
 	function getDataList(api) {
-		var myObj, x, txt = "";
+		var myObj, myArr, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		var container = document.getElementById("Container");
+		container.innerHTML = '';
+		
+		var dropdownSort =document.getElementById("dropdownSort");
+		dropdownSort.onchange = getAllIngredientsSorted;
+		dropdownSort.hidden=false;
+		var dropdownSortDesc =document.getElementById("dropdownSortDesc");
+		dropdownSortDesc.onchange = getAllIngredientsSorted;
+		dropdownSortDesc.hidden=false;
+		
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myArr = JSON.parse(this.responseText);
+				myArr = sortArray(myArr,"id", false);
+				var table = document.createElement("Table");
+				for (x in myArr) {
+					var myObj = myArr[x];
+					var row = document.createElement("TR");
+					for(y in myObj) {
+						var col = document.createElement("TD");
+						var textNode = document.createTextNode(myObj[y]);
+						col.appendChild(textNode);
+						row.appendChild(col);
+						if(x==0){
+							var option = document.createElement("OPTION");
+							var optionText = document.createTextNode(y);
+							option.appendChild(optionText);
+							option.value=y;
+							dropdownSort.appendChild(option);
+						};
+					};
+					table.appendChild(row);
+				};
+				table.className='table table-striped table-bordered table-hover';
+				container.appendChild(table);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	function getDataListSorted(api,key,sort) {
+		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
 		var container = document.getElementById("Container");
 		container.innerHTML = '';
@@ -63,7 +124,8 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myArr = JSON.parse(this.responseText);
-				alert(this.responseText);
+				myArr = sortArray(myArr,key, sort);
+				alert(myArr); //Just for checking datas - Delete at Final
 				var table = document.createElement("Table");
 				for (x in myArr) {
 					var myObj = myArr[x];
@@ -84,11 +146,16 @@
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
 	}
-	function jojo(){
-		var jo = document.getElementsByTagName("html");
-		console.log(jo);
-		jo["0"].children[1].children["0"].style.backgroundColor ="green";
-	}
+	function sortArray(array,key, sort) {
+	    array.sort(function(a, b) {
+	        if (a[key] < b[key])
+	            return sort ? 1 : -1;
+	        if (a[key] > b[key])
+	            return sort ? -1 : 1;
+	        return 0;
+	    });
+	    return array;
+	};
 </script>
 </head>
 <body>
@@ -109,6 +176,11 @@
 		<div class="row">
 			<button id="button1" hidden="true"></button>
 	        <button id="button2" hidden="true"></button>
+            <select id="dropdownSort" hidden="true" name="key"></select>
+            <select id="dropdownSortDesc" hidden="true" name="Desc">
+            	<option value="Ascending">Ascending</option>
+            	<option value="Descending"> Descending</option>
+            </select>
         </div>
 		<div id="Container" class="row">
 	        
