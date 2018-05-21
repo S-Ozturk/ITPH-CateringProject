@@ -20,4 +20,8 @@ public class IngredientService {
 		return ingredientRepository.findAll();
 	}
 	
+	public void deleteIngredient(Long id) {
+		ingredientRepository.deleteById(id);
+	}
+	
 }
