@@ -7,6 +7,5 @@ import com.project.catering.domain.Ingredient;
 
 @Component
 public interface IngredientRepository extends CrudRepository<Ingredient, Long> {
-	Iterable <Ingredient> findByNameContainsAllIgnoreCaseOrderByNameAsc(String namePart);
 }
 
