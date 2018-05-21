@@ -11,30 +11,30 @@
 <script>
 	function changeToHome() {
 		document.getElementById("Container").innerHTML = '';
-		var button1 =document.getElementById("button1");
-		button1.onclick="";
-		button1.textContent="";
-		button1.hidden=true;
-		var button2 =document.getElementById("button2");
-		button2.onclick="";
-		button2.textContent="";
-		button2.hidden=true;
+		clearAndHideButton("button1");
+		clearAndHideButton("button2");
+		clearAndHideButton("button3");
 		var dropdownSort =document.getElementById("dropdownSort");
-		button2.innerHTML="";
-		button2.hidden=true;
 		dropdownSortDesc.hidden=true;
 		dropdownSort.hidden=true;
 	};
 	
+	function clearAndHideButton(name){
+		var button =document.getElementById(name);
+		button.onclick="";
+		button.textContent="";
+		button.hidden=true;
+	};
+	function defineAndUnhideButton(name, text, functionName){
+		var button =document.getElementById(name);
+		button.onclick=functionName;
+		button.textContent=text;
+		button.hidden=false;
+	};
 	function changeToIngredient() {
-		var button1 =document.getElementById("button1");
-		button1.onclick=getAllIngredients;
-		button1.textContent="Get All Ingredients";
-		button1.hidden=false;
-		var button2 =document.getElementById("button2");
-		button2.onclick=postIngredient;
-		button2.textContent="Add Dummy Ingredient";
-		button2.hidden=false;
+		defineAndUnhideButton("button1","Get All Ingredients",getAllIngredients);
+		defineAndUnhideButton("button2","Add New Ingredient",addIngredient);
+		defineAndUnhideButton("button3","Add Dummy Ingredient",postDummyIngredient);
 	};
 	
 	function getAllIngredients() {
@@ -47,9 +47,9 @@
 		dropdownSortDesc.hidden=false;
 		dropdownSortDesc.value="Ascending";
 		getDataList("ingredient");
-		
 	};
 	
+	//For deciding sort column and direction
 	function getAllIngredientsSorted() {
 		var key = document.getElementById("dropdownSort").value;
 		var desc = document.getElementById("dropdownSortDesc").value;
@@ -61,7 +61,22 @@
 		
 	};
 	
-	function postIngredient() {
+	//Adding New Ingredient Function
+	function postIngredient() {  
+		var name = document.getElementById("name_input").value;
+		var type = document.getElementById("type_input").value;
+		var unit = document.getElementById("unit_type_input").value;
+		var calorie = document.getElementById("calorie_per_unit_input").value;
+		postData("ingredient",'{"name":"'+name+'","type":"'+type+'","unitType":"'+unit+'","caloriePerUnit":'+calorie+'}');
+		
+	};
+	
+	
+	/* 
+	!! DELETE IN FINAL VERSION !!
+	This is just for creating dummy Ingredients for easy use. 
+	*/
+	function postDummyIngredient() {
 		postData("ingredient",'{"name":"Onion","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.10}');
 		postData("ingredient",'{"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.40}');
 		postData("ingredient",'{"name":"Beef Meat Ball","type":"Vegetable","unitType":"gr","caloriePerUnit":0.15}');
@@ -69,12 +84,54 @@
 		postData("ingredient",'{"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}');
 		
 	};
+	
+	//Adding New Ingredient Menu
+	function addIngredient() {  
+		var container = document.getElementById("Container");
+		container.innerHTML = '';
+		function addEnterance(id, title) {
+			var div = document.createElement("DIV");
+			div.className="row";
+			div.style="margin-top:10px"
+			var label = document.createElement("LABEL");
+			var textNode = document.createTextNode(title);
+			label.appendChild(textNode);
+			label.htmlFor = id+"Input";
+			label.className="col-sm-offset-1 col-sm-2 control-label";
+			div.appendChild(label);
+			var divInput = document.createElement("DIV");
+			divInput.className ="col-sm-8";
+			var input = document.createElement("INPUT");
+			input.className ="form-control";
+			input.id=id+"_input";
+			divInput.appendChild(input);
+			div.appendChild(divInput);
+			container.appendChild(div);
+		}
+		addEnterance("name","Name");
+		addEnterance("type","Type");
+		addEnterance("unit_type","Unit Type");
+		addEnterance("calorie_per_unit","Calorie Per Unit");
+		var div = document.createElement("DIV");
+		div.className="row";
+		div.style="margin-top:10px"
+		var divButton = document.createElement("DIV");
+		divButton.className ="col-sm-offset-3 col-sm-8";
+		var textNode = document.createTextNode("Add Ingredient");
+		var button = document.createElement("BUTTON");
+		button.onclick = postIngredient;
+		button.className="btn btn-default";
+		button.appendChild(textNode);
+		divButton.appendChild(button);
+		div.appendChild(divButton);
+		container.appendChild(div);
+	}
 
 	function postData(api,data) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 202) {
-				document.getElementById("Container").innerHTML = this.responseText+". Dummy Item Added";
+				document.getElementById("Container").innerHTML = this.responseText+" Item Added";
 			}
 		};
 		xhttp.open("POST", "http://localhost:8082/api/" + api, true);
@@ -86,6 +143,8 @@
 		getDataListSorted(api,"id",false,true);
 	}
 	
+	/*There is no overload in Javascript because of that I had to 
+	change getDataList function  to getDataListSorted function */
 	function getDataListSorted(api,key,sort, firstTime) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -123,6 +182,8 @@
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
 	}
+	
+	//Sorting function for different situations
 	function sortArray(array,key, sort) {
 	    array.sort(function(a, b) {
 	        if (a[key] < b[key])
@@ -153,6 +214,7 @@
 		<div class="row">
 			<button id="button1" hidden="true"></button>
 	        <button id="button2" hidden="true"></button>
+	        <button id="button3" hidden="true"></button>
             <select id="dropdownSort" hidden="true" name="key"></select>
             <select id="dropdownSortDesc" hidden="true" name="Desc">
             	<option value="Ascending">Ascending</option>
