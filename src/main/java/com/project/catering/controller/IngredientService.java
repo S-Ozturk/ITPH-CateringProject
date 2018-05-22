@@ -21,7 +21,11 @@ public class IngredientService {
 	}
 	
 	public void deleteIngredient(Long id) {
-		ingredientRepository.deleteById(id);
+		ingredientRepository.delete(getIngredientById(id));
 	}
 	
+	public Ingredient getIngredientById(long articleId) {
+		Ingredient obj = ingredientRepository.findById(articleId).get();
+		return obj;
+	}	
 }

@@ -14,6 +14,7 @@
 		clearAndHideButton("button1");
 		clearAndHideButton("button2");
 		clearAndHideButton("button3");
+		clearAndHideButton("button4");
 		var dropdownSort =document.getElementById("dropdownSort");
 		dropdownSortDesc.hidden=true;
 		dropdownSort.hidden=true;
@@ -34,7 +35,8 @@
 	function changeToIngredient() {
 		defineAndUnhideButton("button1","Get All Ingredients",getAllIngredients);
 		defineAndUnhideButton("button2","Add New Ingredient",addIngredient);
-		defineAndUnhideButton("button3","Add Dummy Ingredient",postDummyIngredient);
+		defineAndUnhideButton("button3","Delete Ingredient",getIngredientsForDelete);
+		defineAndUnhideButton("button4","Add Dummy Ingredient",postDummyIngredient);
 	};
 	
 	function getAllIngredients() {
@@ -54,9 +56,9 @@
 		var key = document.getElementById("dropdownSort").value;
 		var desc = document.getElementById("dropdownSortDesc").value;
 		if(desc=="Descending")
-			getDataListSorted("ingredient",key,true,false);
+			getDataListSorted("ingredient",key,true,false,false);
 		else
-			getDataListSorted("ingredient",key,false,false);
+			getDataListSorted("ingredient",key,false,false,false);
 		document.getElementById("dropdownSort").value = key;
 		
 	};
@@ -69,6 +71,10 @@
 		var calorie = document.getElementById("calorie_per_unit_input").value;
 		postData("ingredient",'{"name":"'+name+'","type":"'+type+'","unitType":"'+unit+'","caloriePerUnit":'+calorie+'}');
 		
+	};
+	
+	function getIngredientsForDelete() {  
+		getDataListDelete("ingredient");
 	};
 	
 	
@@ -140,12 +146,17 @@
 	}
 	
 	function getDataList(api) {
-		getDataListSorted(api,"id",false,true);
+		getDataListSorted(api,"id",false,true,false);
 	}
+	
+	function getDataListDelete(api) {
+		getDataListSorted(api,"id",false,true,true);
+	}
+	
 	
 	/*There is no overload in Javascript because of that I had to 
 	change getDataList function  to getDataListSorted function */
-	function getDataListSorted(api,key,sort, firstTime) {
+	function getDataListSorted(api,key,sort, firstTime, deleteMode) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
 		var container = document.getElementById("Container");
@@ -172,6 +183,16 @@
 							dropdownSort.appendChild(option);
 						};
 					};
+					if(deleteMode==true){
+						var buttonDelete = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
+						buttonDelete.appendChild(nodeText);
+						buttonDelete.value=myObj.id;
+						buttonDelete.onclick=function (){deleteIngredient(this.value)};
+						//alert(myArr[x].id);
+						//buttonDelete.addEventListener("click", deleteIngredient(myArr[x].id));
+						row.appendChild(buttonDelete);
+					};
 					table.appendChild(row);
 				};
 				table.className='table table-striped table-bordered table-hover';
@@ -194,6 +215,25 @@
 	    });
 	    return array;
 	};
+	
+	function deleteData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				var container = document.getElementById("Container");
+				container.innerHTML = " Item Deleted";
+			}
+		};
+		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	}
+	
+	function deleteIngredient(id){
+		if(confirm("Want to delete?")) deleteData("ingredient",id);
+	};
+	
+	
 </script>
 </head>
 <body>
@@ -215,6 +255,7 @@
 			<button id="button1" hidden="true"></button>
 	        <button id="button2" hidden="true"></button>
 	        <button id="button3" hidden="true"></button>
+			<button id="button4" hidden="true"></button>
             <select id="dropdownSort" hidden="true" name="key"></select>
             <select id="dropdownSortDesc" hidden="true" name="Desc">
             	<option value="Ascending">Ascending</option>
