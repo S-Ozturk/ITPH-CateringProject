@@ -37,4 +37,11 @@ public class IngredientEndpoint {
 		return Response.accepted(result.getId()).build();	
 	}
 	
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public void deleteIngredient(Long ingredientid){
+		ingredientService.deleteIngredient(ingredientid);
+	}
+	
 }
