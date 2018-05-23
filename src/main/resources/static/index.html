@@ -10,47 +10,88 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 	function changeToHome() {
-		document.getElementById("Container").innerHTML = '';
-		clearAndHideButton("button1");
-		clearAndHideButton("button2");
-		clearAndHideButton("button3");
-		clearAndHideButton("button4");
-		clearAndHideButton("button5");
-		var dropdownSort =document.getElementById("dropdownSort");
-		dropdownSortDesc.hidden=true;
-		dropdownSort.hidden=true;
+		clearContainer();
+		clearMenuRow();
 	};
 	
-	function clearAndHideButton(name){
-		var button =document.getElementById(name);
-		button.onclick="";
-		button.textContent="";
-		button.hidden=true;
+	function changeToIngredient() {
+		clearMenuRow();
+		clearContainer();
+		createMenuButton("button1","Get All Ingredients",getAllIngredients);
+		createMenuButton("button2","Add New Ingredient",addIngredient);
+		createMenuButton("button3","Edit Ingredient",getIngredientsForEdit);
+		createMenuButton("button4","Delete Ingredient",getIngredientsForDelete);
+		createMenuButton("button5","Add Dummy Ingredient",postDummyIngredient);
 	};
-	function defineAndUnhideButton(name, text, functionName){
-		var button =document.getElementById(name);
+	
+	function clearContainer(){
+		document.getElementById("Container").innerHTML = '';
+	};
+	
+	function clearMenuRow(){
+		document.getElementById("menuRow").innerHTML = '';
+	};
+	
+	function removeElement(id){
+		var element = document.getElementById(id);
+		element.parentNode.removeChild(element);
+	};
+	
+	
+	function createMenuButton(id, text, functionName){
+		var button = document.createElement("BUTTON");
+		button.value = id;
 		button.onclick=functionName;
 		button.textContent=text;
-		button.hidden=false;
-	};
-	function changeToIngredient() {
-		defineAndUnhideButton("button1","Get All Ingredients",getAllIngredients);
-		defineAndUnhideButton("button2","Add New Ingredient",addIngredient);
-		defineAndUnhideButton("button3","Edit Ingredient",getIngredientsForEdit);
-		defineAndUnhideButton("button4","Delete Ingredient",getIngredientsForDelete);
-		defineAndUnhideButton("button5","Add Dummy Ingredient",postDummyIngredient);
+		document.getElementById("menuRow").appendChild(button);
 	};
 	
-	function getAllIngredients() {
-		var dropdownSort =document.getElementById("dropdownSort");
+	function creatOrderDropdown(){
+		var dropdownSort = document.createElement("SELECT");
 		dropdownSort.onchange = getAllIngredientsSorted;
-		dropdownSort.hidden=false;
-		dropdownSort.innerHTML = '';
-		var dropdownSortDesc =document.getElementById("dropdownSortDesc");
+		dropdownSort.id="dropdownSort";
+		var dropdownSortDesc = document.createElement("SELECT");
+		var optionAsc = document.createElement("option");
+		optionAsc.text = "Ascending";
+		optionAsc.value= "Ascending";
+		dropdownSortDesc.add(optionAsc);
+		var optionDesc = document.createElement("option");
+		optionDesc.text = "Descending";
+		optionDesc.value= "Descending";
+		dropdownSortDesc.add(optionDesc);
 		dropdownSortDesc.onchange = getAllIngredientsSorted;
-		dropdownSortDesc.hidden=false;
-		dropdownSortDesc.value="Ascending";
-		getDataList("ingredient");
+		dropdownSortDesc.id="dropdownSortDesc";
+		var menuRow = document.getElementById("menuRow");
+		menuRow.appendChild(dropdownSort);
+		menuRow.appendChild(dropdownSortDesc);
+	};
+	
+	function createSearchInput(){
+		var input = document.createElement("INPUT");
+		input.id="searchInput";
+		input.placeholder="Search...";
+		var menuRow = document.getElementById("menuRow");
+		menuRow.appendChild(input);
+		createMenuButton("buttonSearch","Search",searchData);
+	};
+	
+	function searchData(){
+		var search = document.getElementById("searchInput").value;
+		alert(search);
+		if (search==""){
+			getDataListSorted("ingredient","id",false,false,0)
+		}else{
+			getDataListSorted("ingredient/"+search+"/search","id",false,false,0)
+		}
+	};
+		
+	
+	function getAllIngredients() {
+		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
+			creatOrderDropdown();
+			createSearchInput();
+		};
+		getDataListSorted("ingredient","id",false,true,0)
 	};
 	
 	//For deciding sort column and direction
@@ -117,9 +158,9 @@
 	
 	
 	//Adding New Ingredient and Editing Menu
-	function createIngredientForm(myObj) {  
+	function createIngredientForm(myObj) { 
+		clearContainer();
 		var container = document.getElementById("Container");
-		container.innerHTML = '';
 		function addEnterance(id, title, value) {
 			var div = document.createElement("DIV");
 			div.className="row";
@@ -224,10 +265,6 @@
 		xhttp.send(data);
 	}
 	
-	function getDataList(api) {
-		getDataListSorted(api,"id",false,true,0);
-	}
-	
 	
 	/*There is no overload in Javascript because of that I had to 
 	change getDataList function  to getDataListSorted function 
@@ -236,8 +273,8 @@
 	function getDataListSorted(api,key,sort, firstTime, mode) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
+		clearContainer();
 		var container = document.getElementById("Container");
-		container.innerHTML = '';
 		
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
@@ -339,17 +376,7 @@
 	  </div>
 	</nav>
 	<div class="container-fluid">
-		<div class="row">
-			<button id="button1" hidden="true"></button>
-	        <button id="button2" hidden="true"></button>
-	        <button id="button3" hidden="true"></button>
-			<button id="button4" hidden="true"></button>
-			<button id="button5" hidden="true"></button>
-            <select id="dropdownSort" hidden="true" name="key"></select>
-            <select id="dropdownSortDesc" hidden="true" name="Desc">
-            	<option value="Ascending">Ascending</option>
-            	<option value="Descending"> Descending</option>
-            </select>
+		<div id="menuRow" class="row">
         </div>
 		<div id="Container" class="row">
         </div>

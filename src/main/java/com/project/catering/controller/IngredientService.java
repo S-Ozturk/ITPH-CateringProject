@@ -20,6 +20,24 @@ public class IngredientService {
 		return ingredientRepository.findAll();
 	}
 	
+	public Iterable<Ingredient> getIngredientsLike(String search){
+		try {
+	        long l = Long.parseLong(search);
+	        //System.out.println("It's an long: " + l);
+	        return ingredientRepository.findByIdLike(l);
+	    } catch (NumberFormatException e) {
+	        try {
+	            double d = Double.parseDouble(search);
+	            //System.out.println("It's an double: " + d);
+	            return ingredientRepository.findByCaloriePerUnitLike(d);
+	        } catch (NumberFormatException e2) {
+	        	//System.out.println("It's an string: " + search);
+	        	search = "%" + search + "%";
+	        	return ingredientRepository.findByNameOrTypeOrUnitTypeLike(search,search,search);
+	        }
+	    }
+	}
+	
 	public void deleteIngredient(Long id) {
 		ingredientRepository.delete(getIngredientById(id));
 	}

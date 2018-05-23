@@ -13,10 +13,6 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.catering.controller.IngredientService;
 import com.project.catering.domain.Ingredient;
@@ -41,6 +37,14 @@ public class IngredientEndpoint {
 	public Response getSingleIngredient ( @PathParam("ingredientid") int id){
 		Ingredient ingredient =  ingredientService.getIngredientById(id);
 		return Response.ok(ingredient).build();
+	}
+	
+	@Path("/{search}/search")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSearchResult ( @PathParam("search") String search){
+		Iterable <Ingredient> ingredients = ingredientService.getIngredientsLike(search);
+		return Response.ok(ingredients).build();
 	}
 	
 	@POST
