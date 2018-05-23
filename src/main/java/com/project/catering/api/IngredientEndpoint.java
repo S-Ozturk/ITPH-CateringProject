@@ -4,13 +4,19 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.project.catering.controller.IngredientService;
 import com.project.catering.domain.Ingredient;
@@ -29,10 +35,26 @@ public class IngredientEndpoint {
 		return Response.ok(ingredients).build();
 	}
 	
+	@Path("/{ingredientid}/single")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSingleIngredient ( @PathParam("ingredientid") int id){
+		Ingredient ingredient =  ingredientService.getIngredientById(id);
+		return Response.ok(ingredient).build();
+	}
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response changeIngredient(Ingredient ingredient){
+		Ingredient result = ingredientService.saveIngredient(ingredient);
+		return Response.accepted(result.getId()).build();	
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response updateIngredient(Ingredient ingredient){
 		Ingredient result = ingredientService.saveIngredient(ingredient);
 		return Response.accepted(result.getId()).build();	
 	}

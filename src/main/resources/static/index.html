@@ -15,6 +15,7 @@
 		clearAndHideButton("button2");
 		clearAndHideButton("button3");
 		clearAndHideButton("button4");
+		clearAndHideButton("button5");
 		var dropdownSort =document.getElementById("dropdownSort");
 		dropdownSortDesc.hidden=true;
 		dropdownSort.hidden=true;
@@ -35,8 +36,9 @@
 	function changeToIngredient() {
 		defineAndUnhideButton("button1","Get All Ingredients",getAllIngredients);
 		defineAndUnhideButton("button2","Add New Ingredient",addIngredient);
-		defineAndUnhideButton("button3","Delete Ingredient",getIngredientsForDelete);
-		defineAndUnhideButton("button4","Add Dummy Ingredient",postDummyIngredient);
+		defineAndUnhideButton("button3","Edit Ingredient",getIngredientsForEdit);
+		defineAndUnhideButton("button4","Delete Ingredient",getIngredientsForDelete);
+		defineAndUnhideButton("button5","Add Dummy Ingredient",postDummyIngredient);
 	};
 	
 	function getAllIngredients() {
@@ -56,14 +58,14 @@
 		var key = document.getElementById("dropdownSort").value;
 		var desc = document.getElementById("dropdownSortDesc").value;
 		if(desc=="Descending")
-			getDataListSorted("ingredient",key,true,false,false);
+			getDataListSorted("ingredient",key,true,false,0);
 		else
-			getDataListSorted("ingredient",key,false,false,false);
+			getDataListSorted("ingredient",key,false,false,0);
 		document.getElementById("dropdownSort").value = key;
 		
 	};
 	
-	//Adding New Ingredient Function
+	//Add New Ingredient Function
 	function postIngredient() {  
 		var name = document.getElementById("name_input").value;
 		var type = document.getElementById("type_input").value;
@@ -73,8 +75,18 @@
 		
 	};
 	
+	//Update Ingredient Function
+	function putIngredient() {  
+		var id = document.getElementById("id_input").value;
+		var name = document.getElementById("name_input").value;
+		var type = document.getElementById("type_input").value;
+		var unit = document.getElementById("unit_type_input").value;
+		var calorie = document.getElementById("calorie_per_unit_input").value;
+		putData("ingredient",'{"id":"'+ id +'","name":"'+name+'","type":"'+type+'","unitType":"'+unit+'","caloriePerUnit":'+calorie+'}');
+	};
+	
 	function getIngredientsForDelete() {  
-		getDataListDelete("ingredient");
+		getDataListSorted("ingredient","id",false,true,1);
 	};
 	
 	
@@ -91,11 +103,24 @@
 		
 	};
 	
-	//Adding New Ingredient Menu
 	function addIngredient() {  
+		createIngredientForm(null);
+	}
+	
+	function getIngredientsForEdit() {  
+		getDataListSorted("ingredient","id",false,true,2);
+	};
+	
+	function editIngredient(id) {  
+		getOneById("ingredient",id);
+	}
+	
+	
+	//Adding New Ingredient and Editing Menu
+	function createIngredientForm(myObj) {  
 		var container = document.getElementById("Container");
 		container.innerHTML = '';
-		function addEnterance(id, title) {
+		function addEnterance(id, title, value) {
 			var div = document.createElement("DIV");
 			div.className="row";
 			div.style="margin-top:10px"
@@ -110,27 +135,69 @@
 			var input = document.createElement("INPUT");
 			input.className ="form-control";
 			input.id=id+"_input";
+			input.value=value;
 			divInput.appendChild(input);
 			div.appendChild(divInput);
 			container.appendChild(div);
 		}
-		addEnterance("name","Name");
-		addEnterance("type","Type");
-		addEnterance("unit_type","Unit Type");
-		addEnterance("calorie_per_unit","Calorie Per Unit");
+		if(myObj != null){
+			addEnterance("id","Id", myObj.id);
+			document.getElementById("id_input").disabled=true;
+			addEnterance("name","Name",myObj.name);
+			addEnterance("type","Type",myObj.type);
+			addEnterance("unit_type","Unit Type",myObj.unitType);
+			addEnterance("calorie_per_unit","Calorie Per Unit",myObj.caloriePerUnit);
+		}else{
+			addEnterance("name","Name",null);
+			addEnterance("type","Type",null);
+			addEnterance("unit_type","Unit Type",null);
+			addEnterance("calorie_per_unit","Calorie Per Unit",null);
+		}
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
 		var divButton = document.createElement("DIV");
 		divButton.className ="col-sm-offset-3 col-sm-8";
-		var textNode = document.createTextNode("Add Ingredient");
-		var button = document.createElement("BUTTON");
-		button.onclick = postIngredient;
-		button.className="btn btn-default";
-		button.appendChild(textNode);
-		divButton.appendChild(button);
+		if(myObj != null){
+			var textNode = document.createTextNode("Save Changes");
+			var button = document.createElement("BUTTON");
+			button.onclick = putIngredient;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+			var textNode = document.createTextNode("Cancel");
+			var button = document.createElement("BUTTON");
+			button.onclick = getIngredientsForEdit;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+		}
+		else {
+			var textNode = document.createTextNode("Add Ingredient");
+			var button = document.createElement("BUTTON");
+			button.onclick = postIngredient;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+		};
 		div.appendChild(divButton);
 		container.appendChild(div);
+	};
+	
+	// Get Just 1 Ingredient for editing
+	function getOneById(api,id) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				alert(myObj.name);
+				createIngredientForm(myObj);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
 	}
 
 	function postData(api,data) {
@@ -145,18 +212,28 @@
 		xhttp.send(data);
 	}
 	
-	function getDataList(api) {
-		getDataListSorted(api,"id",false,true,false);
+	function putData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				document.getElementById("Container").innerHTML = this.responseText+" Item Updated";
+			}
+		};
+		xhttp.open("PUT", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
 	}
 	
-	function getDataListDelete(api) {
-		getDataListSorted(api,"id",false,true,true);
+	function getDataList(api) {
+		getDataListSorted(api,"id",false,true,0);
 	}
 	
 	
 	/*There is no overload in Javascript because of that I had to 
-	change getDataList function  to getDataListSorted function */
-	function getDataListSorted(api,key,sort, firstTime, deleteMode) {
+	change getDataList function  to getDataListSorted function 
+	added first time for reading sorting headers
+	added mode to be able to switch standart list to edit mode and delete mode*/
+	function getDataListSorted(api,key,sort, firstTime, mode) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
 		var container = document.getElementById("Container");
@@ -183,15 +260,26 @@
 							dropdownSort.appendChild(option);
 						};
 					};
-					if(deleteMode==true){
+					switch(mode){
+					case 1:
 						var buttonDelete = document.createElement("BUTTON");
 						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
 						buttonDelete.appendChild(nodeText);
 						buttonDelete.value=myObj.id;
 						buttonDelete.onclick=function (){deleteIngredient(this.value)};
-						//alert(myArr[x].id);
-						//buttonDelete.addEventListener("click", deleteIngredient(myArr[x].id));
 						row.appendChild(buttonDelete);
+						break;
+						
+					case 2:
+						var buttonEdit = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("Edit - " + myObj.name);
+						buttonEdit.appendChild(nodeText);
+						buttonEdit.value=myObj.id;
+						buttonEdit.onclick=function (){editIngredient(this.value)};
+						row.appendChild(buttonEdit);
+						break;
+					default:
+						break;
 					};
 					table.appendChild(row);
 				};
@@ -219,9 +307,9 @@
 	function deleteData(api,data) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 202) {
+			if (this.readyState == 4 && this.status == 204) {
 				var container = document.getElementById("Container");
-				container.innerHTML = " Item Deleted";
+				container.innerHTML = "Item Deleted With Id: "+ data;
 			}
 		};
 		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
@@ -256,6 +344,7 @@
 	        <button id="button2" hidden="true"></button>
 	        <button id="button3" hidden="true"></button>
 			<button id="button4" hidden="true"></button>
+			<button id="button5" hidden="true"></button>
             <select id="dropdownSort" hidden="true" name="key"></select>
             <select id="dropdownSortDesc" hidden="true" name="Desc">
             	<option value="Ascending">Ascending</option>
