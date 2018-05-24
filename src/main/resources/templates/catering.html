@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,6 +22,13 @@
 		createMenuButton("button3","Edit Ingredient",getIngredientsForEdit);
 		createMenuButton("button4","Delete Ingredient",getIngredientsForDelete);
 		createMenuButton("button5","Add Dummy Ingredient",postDummyIngredient);
+	};
+	
+	function changeToSettings() {
+		clearMenuRow();
+		clearContainer();
+		createMenuButton("button1","Users",getAllUsers);
+		createMenuButton("button2","Roles",getAllRoles);
 	};
 	
 	function clearContainer(){
@@ -84,7 +91,10 @@
 			getDataListSorted("ingredient/"+search+"/search","id",false,false,0)
 		}
 	};
-		
+	
+	//------------------------------------------
+	//INGREDIENTS PAGE CODES START
+	//------------------------------------------	
 	
 	function getAllIngredients() {
 		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
@@ -225,47 +235,6 @@
 		container.appendChild(div);
 	};
 	
-	// Get Just 1 Ingredient for editing
-	function getOneById(api,id) {
-		var myObj, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myObj = JSON.parse(this.responseText);
-				alert(myObj.name);
-				createIngredientForm(myObj);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-
-	function postData(api,data) {
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 202) {
-				document.getElementById("Container").innerHTML = this.responseText+" Item Added";
-			}
-		};
-		xhttp.open("POST", "http://localhost:8082/api/" + api, true);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send(data);
-	}
-	
-	function putData(api,data) {
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 202) {
-				document.getElementById("Container").innerHTML = this.responseText+" Item Updated";
-			}
-		};
-		xhttp.open("PUT", "http://localhost:8082/api/" + api, true);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send(data);
-	}
-	
-	
 	/*There is no overload in Javascript because of that I had to 
 	change getDataList function  to getDataListSorted function 
 	added first time for reading sorting headers
@@ -329,6 +298,154 @@
 		xhttp.send();
 	}
 	
+	function deleteIngredient(id){
+		if(confirm("Want to delete?")) deleteData("ingredient",id);
+	};
+
+	//------------------------------------------	
+	//INGREDIENTS PAGE CODES END
+	//------------------------------------------
+	
+	
+	//------------------------------------------
+	//SETTINGS PAGE CODES START
+	//------------------------------------------	
+	
+	function getAllUsers(){};
+	
+	
+	function getAllRoles(){
+		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
+			creatOrderDropdown();
+			createSearchInput();
+		};
+		getUserListSorted("settings/role","name",false);
+	};
+	
+	function editRole(id){
+		
+	};
+	
+	function deleteRole(id){
+		
+	};
+	
+	function getRoleListSorted(api,key,sort) {
+		var myObj, myArr, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		clearContainer();
+		var container = document.getElementById("Container");
+		
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myArr = JSON.parse(this.responseText);
+				myArr = sortArray(myArr,"name", sort);
+				var table = document.createElement("Table");
+				for (x in myArr) {
+					var myObj = myArr[x];
+					var row = document.createElement("TR");
+					var counter = 0;
+					for(y in myObj) {
+						var col = document.createElement("TD");
+						if(counter==0){
+							var buttonEdit = document.createElement("BUTTON");
+							var nodeText = document.createTextNode("Edit - " + myObj.name);
+							buttonEdit.appendChild(nodeText);
+							buttonEdit.value=myObj.id;
+							buttonEdit.onclick=function (){editRole(this.value)};
+							row.appendChild(buttonEdit);
+						}
+						var textNode = document.createTextNode(myObj[y]);
+						col.appendChild(textNode);
+						row.appendChild(col);
+						
+						var option = document.createElement("OPTION");
+						var optionText = document.createTextNode(y);
+						option.appendChild(optionText);
+						option.value=y;
+						dropdownSort.appendChild(option);
+					};
+					
+					var buttonDelete = document.createElement("BUTTON");
+					var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
+					buttonDelete.appendChild(nodeText);
+					buttonDelete.value=myObj.id;
+					buttonDelete.onclick=function (){deleteRole(this.value)};
+					row.appendChild(buttonDelete);
+					break;
+					table.appendChild(row);
+				};
+				table.className='table table-striped table-bordered table-hover';
+				container.appendChild(table);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	//------------------------------------------
+	//SETTINGS PAGE CODES END
+	//------------------------------------------	
+	
+	function getData(api) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				for (x in myObj) {
+					
+				};
+				document.getElementById("buttonsContainer").innerHTML = txt;
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	// Get Just 1 object for editing
+	function getOneById(api,id) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				alert(myObj.name);
+				createIngredientForm(myObj);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+
+	function postData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				document.getElementById("Container").innerHTML = this.responseText+" Item Added";
+			}
+		};
+		xhttp.open("POST", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	}
+	
+	function putData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				document.getElementById("Container").innerHTML = this.responseText+" Item Updated";
+			}
+		};
+		xhttp.open("PUT", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	}
+	
+	
 	//Sorting function for different situations
 	function sortArray(array,key, sort) {
 	    array.sort(function(a, b) {
@@ -354,10 +471,6 @@
 		xhttp.send(data);
 	}
 	
-	function deleteIngredient(id){
-		if(confirm("Want to delete?")) deleteData("ingredient",id);
-	};
-	
 	
 </script>
 </head>
@@ -371,7 +484,8 @@
 	      <li class="active"><a href="#" onclick="changeToHome()">Home</a></li>
 	      <li><a href="#">Page 1</a></li>
 	      <li><a href="#">Page 2</a></li>
-	      <li><a href="#" onclick="changeToIngredient()">Ingredient</a></li>
+	      <li><a href="#" onclick="changeToIngredient()">Ingredients</a></li>
+	      <li><a href="#" onclick="changeToSettings()">Settings</a></li>
 	    </ul>
 	    <div class="navbar-right">
 	      	<form th:action="@{/logout}" method="post">
