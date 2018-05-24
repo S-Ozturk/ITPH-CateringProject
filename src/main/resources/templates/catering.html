@@ -29,6 +29,7 @@
 		clearContainer();
 		createMenuButton("button1","Users",getAllUsers);
 		createMenuButton("button2","Roles",getAllRoles);
+		createMenuButton("button2","Add Dummy Roles",postDummyRoles);
 	};
 	
 	function clearContainer(){
@@ -70,6 +71,22 @@
 		dropdownSortDesc.id="dropdownSortDesc";
 		var menuRow = document.getElementById("menuRow");
 		menuRow.appendChild(dropdownSort);
+		menuRow.appendChild(dropdownSortDesc);
+	};
+	
+	function createSortDropdown(){
+		var dropdownSortDesc = document.createElement("SELECT");
+		var optionAsc = document.createElement("option");
+		optionAsc.text = "Ascending";
+		optionAsc.value= false;
+		dropdownSortDesc.add(optionAsc);
+		var optionDesc = document.createElement("option");
+		optionDesc.text = "Descending";
+		optionDesc.value= true;
+		dropdownSortDesc.add(optionDesc);
+		dropdownSortDesc.onchange = getAllRoles;
+		dropdownSortDesc.id="dropdownSortDesc";
+		var menuRow = document.getElementById("menuRow");
 		menuRow.appendChild(dropdownSortDesc);
 	};
 	
@@ -311,15 +328,17 @@
 	//SETTINGS PAGE CODES START
 	//------------------------------------------	
 	
-	function getAllUsers(){};
+			
+	function getAllUsers(){
+		getUserListSorted("settings/role",false);
+	};
 	
 	
 	function getAllRoles(){
-		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
-			creatOrderDropdown();
+		if(document.getElementById("searchInput")==null ){
 			createSearchInput();
 		};
-		getUserListSorted("settings/role","name",false);
+		getRoleListSorted("settings/role");
 	};
 	
 	function editRole(id){
@@ -330,49 +349,52 @@
 		
 	};
 	
-	function getRoleListSorted(api,key,sort) {
+	function postDummyRoles() {
+		postData("settings/role",'{"name":"USER"}');
+		postData("settings/role",'{"name":"CHEF"}');
+		postData("settings/role",'{"name":"ADMIN"}');		
+	};
+	
+	function getRoleListSorted(api) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
 		clearContainer();
 		var container = document.getElementById("Container");
-		
+		alert("get all roles clicked");
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myArr = JSON.parse(this.responseText);
-				myArr = sortArray(myArr,"name", sort);
+				myArr = sortArray(myArr,"name", false);
 				var table = document.createElement("Table");
 				for (x in myArr) {
-					var myObj = myArr[x];
 					var row = document.createElement("TR");
-					var counter = 0;
-					for(y in myObj) {
-						var col = document.createElement("TD");
-						if(counter==0){
-							var buttonEdit = document.createElement("BUTTON");
-							var nodeText = document.createTextNode("Edit - " + myObj.name);
-							buttonEdit.appendChild(nodeText);
-							buttonEdit.value=myObj.id;
-							buttonEdit.onclick=function (){editRole(this.value)};
-							row.appendChild(buttonEdit);
-						}
-						var textNode = document.createTextNode(myObj[y]);
-						col.appendChild(textNode);
-						row.appendChild(col);
-						
-						var option = document.createElement("OPTION");
-						var optionText = document.createTextNode(y);
-						option.appendChild(optionText);
-						option.value=y;
-						dropdownSort.appendChild(option);
-					};
 					
-					var buttonDelete = document.createElement("BUTTON");
-					var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
-					buttonDelete.appendChild(nodeText);
-					buttonDelete.value=myObj.id;
-					buttonDelete.onclick=function (){deleteRole(this.value)};
-					row.appendChild(buttonDelete);
-					break;
+					var col = document.createElement("TD");
+					if(myArr[x].name != "ADMIN"){
+						var buttonEdit = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("Edit - " + myArr[x].name);
+						buttonEdit.appendChild(nodeText);
+						buttonEdit.value=myArr[x].id;
+						buttonEdit.onclick=function (){editRole(this.value)};
+						col.appendChild(buttonEdit);
+					}
+					row.appendChild(col);
+					
+					var col = document.createElement("TD");
+					var textNode = document.createTextNode(myArr[x].name);
+					col.appendChild(textNode);
+					row.appendChild(col);
+					
+					var col = document.createElement("TD");
+					if(myArr[x].name != "ADMIN"){
+						var buttonDelete = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("! Delete ! - " + myArr[x].name);
+						buttonDelete.appendChild(nodeText);
+						buttonDelete.value=myArr[x].id;
+						buttonDelete.onclick=function (){deleteRole(this.value)};
+						col.appendChild(buttonDelete);
+					}
+					row.appendChild(col);
 					table.appendChild(row);
 				};
 				table.className='table table-striped table-bordered table-hover';
