@@ -1,6 +1,7 @@
 package com.project.catering.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,14 +13,17 @@ public class IngredientService {
 	@Autowired
 	private IngredientRepository ingredientRepository;
 
+	@PreAuthorize("hasAnyRole('ADMIN','NUTRITIONIST','STOCKMANAGER')")
 	public Ingredient saveIngredient(Ingredient ingredient) {
 		return ingredientRepository.save(ingredient);
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	public Iterable<Ingredient> getAllIngredients(){
 		return ingredientRepository.findAll();
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	public Iterable<Ingredient> getIngredientsLike(String search){
 		try {
 	        long l = Long.parseLong(search);
@@ -38,6 +42,7 @@ public class IngredientService {
 	    }
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	public void deleteIngredient(Long id) {
 		ingredientRepository.delete(getIngredientById(id));
 	}
