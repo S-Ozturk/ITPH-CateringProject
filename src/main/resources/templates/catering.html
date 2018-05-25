@@ -90,23 +90,39 @@
 		menuRow.appendChild(dropdownSortDesc);
 	};
 	
-	function createSearchInput(){
+	function createSearchInput(api){
+		var apiText = api;
+		alert(apiText);
 		var input = document.createElement("INPUT");
 		input.id="searchInput";
 		input.placeholder="Search...";
 		var menuRow = document.getElementById("menuRow");
 		menuRow.appendChild(input);
-		createMenuButton("buttonSearch","Search",searchData);
+		createMenuButton("buttonSearch","Search",function (){searchData(apiText)});
 	};
 	
-	function searchData(){
+	function searchData(api){
 		var search = document.getElementById("searchInput").value;
 		alert(search);
-		if (search==""){
-			getDataListSorted("ingredient","id",false,false,0)
-		}else{
-			getDataListSorted("ingredient/"+search+"/search","id",false,false,0)
+		alert(api+"/"+search+"/search");
+		switch(api){
+			case "ingredient":
+				if (search==""){
+					getDataListSorted(api,"id",false,false,0);
+				}else{
+					getDataListSorted(api+"/"+search+"/search","id",false,false,0);
+				};
+				break;
+			case "settings/role":
+				if (search==""){
+					getRoleListSorted(api);
+				}else{
+					getRoleListSorted(api+"/"+search+"/search");
+				};
+				break;
+				
 		}
+		
 	};
 	
 	//------------------------------------------
@@ -116,7 +132,7 @@
 	function getAllIngredients() {
 		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
 			creatOrderDropdown();
-			createSearchInput();
+			createSearchInput("ingredient");
 		};
 		getDataListSorted("ingredient","id",false,true,0)
 	};
@@ -330,13 +346,20 @@
 	
 			
 	function getAllUsers(){
-		getUserListSorted("settings/role",false);
+		if(document.getElementById("searchInput")==null ){
+			createSearchInput("settings/user");
+		}else{
+			document.getElementById("buttonSearch").onclick = function (){searchData("settings/user")};
+		};
+		getUserListSorted("settings/user");
 	};
 	
 	
 	function getAllRoles(){
 		if(document.getElementById("searchInput")==null ){
-			createSearchInput();
+			createSearchInput("settings/role");
+		}else{
+			document.getElementById("buttonSearch").onclick = function (){searchData("settings/role")};
 		};
 		getRoleListSorted("settings/role");
 	};
@@ -360,7 +383,56 @@
 		var xhttp = new XMLHttpRequest();
 		clearContainer();
 		var container = document.getElementById("Container");
-		alert("get all roles clicked");
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myArr = JSON.parse(this.responseText);
+				myArr = sortArray(myArr,"name", false);
+				var table = document.createElement("Table");
+				for (x in myArr) {
+					var row = document.createElement("TR");
+					
+					var col = document.createElement("TD");
+					if(myArr[x].name != "ADMIN"){
+						var buttonEdit = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("Edit - " + myArr[x].name);
+						buttonEdit.appendChild(nodeText);
+						buttonEdit.value=myArr[x].id;
+						buttonEdit.onclick=function (){editRole(this.value)};
+						col.appendChild(buttonEdit);
+					}
+					row.appendChild(col);
+					
+					var col = document.createElement("TD");
+					var textNode = document.createTextNode(myArr[x].name);
+					col.appendChild(textNode);
+					row.appendChild(col);
+					
+					var col = document.createElement("TD");
+					if(myArr[x].name != "ADMIN"){
+						var buttonDelete = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("! Delete ! - " + myArr[x].name);
+						buttonDelete.appendChild(nodeText);
+						buttonDelete.value=myArr[x].id;
+						buttonDelete.onclick=function (){deleteRole(this.value)};
+						col.appendChild(buttonDelete);
+					}
+					row.appendChild(col);
+					table.appendChild(row);
+				};
+				table.className='table table-striped table-bordered table-hover';
+				container.appendChild(table);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	function getUserListSorted(api) {
+		var myObj, myArr, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		clearContainer();
+		var container = document.getElementById("Container");
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myArr = JSON.parse(this.responseText);
@@ -434,7 +506,6 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myObj = JSON.parse(this.responseText);
-				alert(myObj.name);
 				createIngredientForm(myObj);
 			};
 		};
@@ -491,23 +562,34 @@
 		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send(data);
-	}
+	};
 	
+	function generateHtmlMenu(){
+		if([[${#httpServletRequest.isUserInRole("ADMIN")}]]){
+			
+		};
+		
+		if([[${#httpServletRequest.isUserInRole("USER")}]]){
+			//settingsMenu.style.visibility = "hidden";
+			var element = document.getElementById("settingsMenuLi");
+			element.parentNode.removeChild(element);
+		};
+	};
 	
 </script>
 </head>
-<body>
+<body onload="generateHtmlMenu()">
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
 	      <a class="navbar-brand" href="#">ITPH - Fase2 - Catering Project</a>
 	    </div>
-	    <ul class="nav navbar-nav" onload="">
+	    <ul id="mainMenu" class="nav navbar-nav">
 	      <li class="active"><a href="#" onclick="changeToHome()">Home</a></li>
 	      <li><a href="#">Page 1</a></li>
-	      <li><a href="#">Page 2</a></li>
+	      <li><a href="#">Page 2 - [[${#httpServletRequest.isUserInRole("ADMIN")}]]</a></li>
 	      <li><a href="#" onclick="changeToIngredient()">Ingredients</a></li>
-	      <li><a href="#" onclick="changeToSettings()">Settings</a></li>
+	      <li id="settingsMenuLi"><a href="#" onclick="changeToSettings()">Settings</a></li>
 	    </ul>
 	    <div class="navbar-right">
 	      	<form th:action="@{/logout}" method="post">
