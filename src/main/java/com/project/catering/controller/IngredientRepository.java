@@ -10,7 +10,7 @@ import com.project.catering.domain.Ingredient;
 @Component
 public interface IngredientRepository extends CrudRepository<Ingredient, Long> {
 	List<Ingredient> findByIdLike(Long search);
-	List<Ingredient> findByNameOrTypeOrUnitTypeLike(String searchName,String searchType,String searchUnit);
+	List<Ingredient> findByNameContainingOrTypeContainingOrUnitTypeContaining(String searchName,String searchType,String searchUnit);
 	List<Ingredient> findByCaloriePerUnitLike(Double search);
 }
 

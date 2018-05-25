@@ -14,60 +14,60 @@ import javax.ws.rs.core.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.project.catering.controller.RoleService;
-import com.project.catering.domain.Role;
+import com.project.catering.controller.UserService;
+import com.project.catering.domain.User;
 
-@Path("settings/role")
+@Path("settings/user")
 @Component
-public class RoleEndpoint {
+public class UserEndpoint {
 	
 	@Autowired
-	private RoleService roleService;
+	private UserService userService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listGroep(){
-		Iterable <Role> roles= roleService.getAllRoles();
-		return Response.ok(roles).build();
+		Iterable <User> users= userService.getAllUsers();
+		return Response.ok(users).build();
 	}
 	
-	@Path("/{roleid}/single")
+	@Path("/{userid}/single")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSingleRole ( @PathParam("roleid") int id){
-		Role role =  roleService.getRoleById(id);
-		return Response.ok(role).build();
+	public Response getSingleUser ( @PathParam("userid") int id){
+		User user =  userService.getUserById(id);
+		return Response.ok(user).build();
 	}
 	
 	@Path("/{search}/search")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getSearchResult ( @PathParam("search") String search){
-		Iterable <Role> roles = roleService.getRolesLike(search);
-		return Response.ok(roles).build();
+		Iterable <User> users = userService.getUsersLike(search);
+		return Response.ok(users).build();
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response changeRole(Role role){
-		Role result = roleService.saveRole(role);
+	public Response changeUser(User user){
+		User result = userService.saveUser(user);
 		return Response.accepted(result.getId()).build();	
 	}
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response updateRole(Role role){
-		Role result = roleService.saveRole(role);
+	public Response updateUser(User user){
+		User result = userService.saveUser(user);
 		return Response.accepted(result.getId()).build();	
 	}
 	
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public void deleteRole(Long roleid){
-		roleService.deleteRole(roleid);
+	public void deleteUser(Long userid){
+		userService.deleteUser(userid);
 	}
 	
 }
