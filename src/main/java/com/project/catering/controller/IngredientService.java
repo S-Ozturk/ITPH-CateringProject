@@ -13,7 +13,7 @@ public class IngredientService {
 	@Autowired
 	private IngredientRepository ingredientRepository;
 
-	@PreAuthorize("hasAnyRole('ADMIN','NUTRITIONIST','STOCKMANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient saveIngredient(Ingredient ingredient) {
 		return ingredientRepository.save(ingredient);
 	}
@@ -38,12 +38,12 @@ public class IngredientService {
 	    }
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','NUTRITIONIST','STOCKMANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public void deleteIngredient(Long id) {
 		ingredientRepository.delete(getIngredientById(id));
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN','NUTRITIONIST','STOCKMANAGER')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient getIngredientById(long articleId) {
 		Ingredient obj = ingredientRepository.findById(articleId).get();
 		return obj;

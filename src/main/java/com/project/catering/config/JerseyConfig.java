@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.project.catering.api.IngredientEndpoint;
 import com.project.catering.api.RoleEndpoint;
+import com.project.catering.api.UserEndpoint;
 
 
 
@@ -16,5 +17,6 @@ public class JerseyConfig extends ResourceConfig {
 	public JerseyConfig(){
 		register(IngredientEndpoint.class);
 		register(RoleEndpoint.class);
+		register(UserEndpoint.class);
 	}
 }

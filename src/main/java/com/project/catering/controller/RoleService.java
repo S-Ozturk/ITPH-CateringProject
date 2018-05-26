@@ -13,22 +13,22 @@ public class RoleService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Role saveRole(Role role) {
 		return roleRepository.save(role);
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Iterable<Role> getAllRoles(){
 		return roleRepository.findAll();
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Role getRoleById(long roleId) {
 		return roleRepository.findById(roleId).get();
 	}	
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteRole(Long id) {
 		roleRepository.delete(getRoleById(id));
 	}
