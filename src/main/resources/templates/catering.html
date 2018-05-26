@@ -28,8 +28,9 @@
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Users",getAllUsers);
-		createMenuButton("button2","Roles",getAllRoles);
-		createMenuButton("button2","Add Dummy Roles",postDummyRoles);
+		createMenuButton("button2","Add Dummy Users",postDummyUsers);
+		createMenuButton("button3","Roles",getAllRoles);
+		createMenuButton("button4","Add Dummy Roles",postDummyRoles);
 	};
 	
 	function clearContainer(){
@@ -48,7 +49,7 @@
 	
 	function createMenuButton(id, text, functionName){
 		var button = document.createElement("BUTTON");
-		button.value = id;
+		button.id = id;
 		button.onclick=functionName;
 		button.textContent=text;
 		document.getElementById("menuRow").appendChild(button);
@@ -92,7 +93,6 @@
 	
 	function createSearchInput(api){
 		var apiText = api;
-		alert(apiText);
 		var input = document.createElement("INPUT");
 		input.id="searchInput";
 		input.placeholder="Search...";
@@ -103,8 +103,6 @@
 	
 	function searchData(api){
 		var search = document.getElementById("searchInput").value;
-		alert(search);
-		alert(api+"/"+search+"/search");
 		switch(api){
 			case "ingredient":
 				if (search==""){
@@ -120,10 +118,46 @@
 					getRoleListSorted(api+"/"+search+"/search");
 				};
 				break;
-				
+			case "settings/user":
+				if (search==""){
+					getUserListSorted(api);
+				}else{
+					getUserListSorted(api+"/"+search+"/search");
+				};
+				break;
 		}
 		
 	};
+	
+	//------------------------------------------
+	//DUMMY DATA CODES START - !! DELETE IN FINAL VERSION !!
+	//------------------------------------------
+	
+	function postDummyIngredient() {
+		postData("ingredient",'{"name":"Onion","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.10}');
+		postData("ingredient",'{"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.40}');
+		postData("ingredient",'{"name":"Beef Meat Ball","type":"Vegetable","unitType":"gr","caloriePerUnit":0.15}');
+		postData("ingredient",'{"name":"Black Pepper","type":"Spice","unitType":"Piece","caloriePerUnit":0.01}');
+		postData("ingredient",'{"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}');
+		
+	};
+	
+	function postDummyRoles() {
+		postData("settings/role",'{"name":"ROLE_USER"}');
+		postData("settings/role",'{"name":"ROLE_CHEF"}');
+		postData("settings/role",'{"name":"ROLE_ADMIN"}');		
+	};
+	
+	function postDummyUsers() {
+		postData("settings/user",'{"username":"user","firstName":"user name","lastName":"user last name","email":"user@cateringproject.nl","password":"password","role":{"id":1}}');
+		postData("settings/user",'{"username":"admin","firstName":"admin name","lastName":"admin last name","email":"admin@cateringproject.nl","password":"password","role":{"id":2}}');
+		postData("settings/user",'{"username":"chef","firstName":"chef name","lastName":"chef last name","email":"user@cateringproject.nl","password":"password","role":{"id":3}}');		
+	};
+	
+	//------------------------------------------
+	//DUMMY DATA CODES END - !! DELETE IN FINAL VERSION !!
+	//------------------------------------------
+	
 	
 	//------------------------------------------
 	//INGREDIENTS PAGE CODES START
@@ -171,21 +205,7 @@
 	
 	function getIngredientsForDelete() {  
 		getDataListSorted("ingredient","id",false,true,1);
-	};
-	
-	
-	/* 
-	!! DELETE IN FINAL VERSION !!
-	This is just for creating dummy Ingredients for easy use. 
-	*/
-	function postDummyIngredient() {
-		postData("ingredient",'{"name":"Onion","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.10}');
-		postData("ingredient",'{"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.40}');
-		postData("ingredient",'{"name":"Beef Meat Ball","type":"Vegetable","unitType":"gr","caloriePerUnit":0.15}');
-		postData("ingredient",'{"name":"Black Pepper","type":"Spice","unitType":"Piece","caloriePerUnit":0.01}');
-		postData("ingredient",'{"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}');
-		
-	};
+	};	
 	
 	function addIngredient() {  
 		createIngredientForm(null);
@@ -348,8 +368,10 @@
 	function getAllUsers(){
 		if(document.getElementById("searchInput")==null ){
 			createSearchInput("settings/user");
+			alert("new from users");
 		}else{
 			document.getElementById("buttonSearch").onclick = function (){searchData("settings/user")};
+			alert("update from users");
 		};
 		getUserListSorted("settings/user");
 	};
@@ -358,8 +380,10 @@
 	function getAllRoles(){
 		if(document.getElementById("searchInput")==null ){
 			createSearchInput("settings/role");
+			alert("new from roles");
 		}else{
 			document.getElementById("buttonSearch").onclick = function (){searchData("settings/role")};
+			alert("update from roles");
 		};
 		getRoleListSorted("settings/role");
 	};
@@ -370,12 +394,6 @@
 	
 	function deleteRole(id){
 		
-	};
-	
-	function postDummyRoles() {
-		postData("settings/role",'{"name":"USER"}');
-		postData("settings/role",'{"name":"CHEF"}');
-		postData("settings/role",'{"name":"ADMIN"}');		
 	};
 	
 	function getRoleListSorted(api) {
@@ -392,12 +410,12 @@
 					var row = document.createElement("TR");
 					
 					var col = document.createElement("TD");
-					if(myArr[x].name != "ADMIN"){
+					if(myArr[x].name != "ROLE_ADMIN"){
 						var buttonEdit = document.createElement("BUTTON");
 						var nodeText = document.createTextNode("Edit - " + myArr[x].name);
 						buttonEdit.appendChild(nodeText);
 						buttonEdit.value=myArr[x].id;
-						buttonEdit.onclick=function (){editRole(this.value)};
+						//buttonEdit.onclick=function (){editRole(this.value)};
 						col.appendChild(buttonEdit);
 					}
 					row.appendChild(col);
@@ -408,12 +426,12 @@
 					row.appendChild(col);
 					
 					var col = document.createElement("TD");
-					if(myArr[x].name != "ADMIN"){
+					if(myArr[x].name != "ROLE_ADMIN"){
 						var buttonDelete = document.createElement("BUTTON");
 						var nodeText = document.createTextNode("! Delete ! - " + myArr[x].name);
 						buttonDelete.appendChild(nodeText);
 						buttonDelete.value=myArr[x].id;
-						buttonDelete.onclick=function (){deleteRole(this.value)};
+						//buttonDelete.onclick=function (){deleteRole(this.value)};
 						col.appendChild(buttonDelete);
 					}
 					row.appendChild(col);
@@ -440,32 +458,34 @@
 				var table = document.createElement("Table");
 				for (x in myArr) {
 					var row = document.createElement("TR");
-					
 					var col = document.createElement("TD");
-					if(myArr[x].name != "ADMIN"){
-						var buttonEdit = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("Edit - " + myArr[x].name);
-						buttonEdit.appendChild(nodeText);
-						buttonEdit.value=myArr[x].id;
-						buttonEdit.onclick=function (){editRole(this.value)};
-						col.appendChild(buttonEdit);
-					}
+					var buttonEdit = document.createElement("BUTTON");
+					var nodeText = document.createTextNode("Edit - " + myArr[x].username);
+					buttonEdit.appendChild(nodeText);
+					buttonEdit.value=myArr[x].id;
+					//buttonEdit.onclick=function (){editRole(this.value)};
+					col.appendChild(buttonEdit);
 					row.appendChild(col);
 					
+					for(y in myArr[x]){
+						if(y=="password" || y=="id"){continue;};
+						var col = document.createElement("TD");
+						if(y=="role"){
+							var textNode = document.createTextNode( myArr[x][y].name);
+						}else{
+							var textNode = document.createTextNode( myArr[x][y]);
+						}
+						col.appendChild(textNode);
+						row.appendChild(col);
+					};
+
 					var col = document.createElement("TD");
-					var textNode = document.createTextNode(myArr[x].name);
-					col.appendChild(textNode);
-					row.appendChild(col);
-					
-					var col = document.createElement("TD");
-					if(myArr[x].name != "ADMIN"){
-						var buttonDelete = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("! Delete ! - " + myArr[x].name);
-						buttonDelete.appendChild(nodeText);
-						buttonDelete.value=myArr[x].id;
-						buttonDelete.onclick=function (){deleteRole(this.value)};
-						col.appendChild(buttonDelete);
-					}
+					var buttonDelete = document.createElement("BUTTON");
+					var nodeText = document.createTextNode("! Delete ! - " + myArr[x].username);
+					buttonDelete.appendChild(nodeText);
+					buttonDelete.value=myArr[x].id;
+					//buttonDelete.onclick=function (){deleteRole(this.value)};
+					col.appendChild(buttonDelete);
 					row.appendChild(col);
 					table.appendChild(row);
 				};
@@ -587,7 +607,7 @@
 	    <ul id="mainMenu" class="nav navbar-nav">
 	      <li class="active"><a href="#" onclick="changeToHome()">Home</a></li>
 	      <li><a href="#">Page 1</a></li>
-	      <li><a href="#">Page 2 - [[${#httpServletRequest.isUserInRole("ADMIN")}]]</a></li>
+	      <li><a href="#">Page 2 - [[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]]</a></li>
 	      <li><a href="#" onclick="changeToIngredient()">Ingredients</a></li>
 	      <li id="settingsMenuLi"><a href="#" onclick="changeToSettings()">Settings</a></li>
 	    </ul>

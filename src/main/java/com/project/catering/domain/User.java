@@ -20,6 +20,10 @@ public class User {
     private String email;
     private String password;
     
+    @ManyToOne
+    @JoinColumn(name="ROLE_ID", nullable=false)
+    private Role role;
+    
     public Long getId() {
 		return id;
 	}
@@ -76,7 +80,4 @@ public class User {
 		this.role = role;
 	}
  
-    @ManyToOne
-    @JoinColumn(name="ROLE_ID")
-    private Role role;
 }

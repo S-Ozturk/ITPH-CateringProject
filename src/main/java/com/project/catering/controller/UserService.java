@@ -13,22 +13,22 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Iterable<User> getAllUsers(){
 		return userRepository.findAll();
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User getUserById(long userId) {
 		return userRepository.findById(userId).get();
 	}	
 	
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void deleteUser(Long id) {
 		userRepository.delete(getUserById(id));
 	}
