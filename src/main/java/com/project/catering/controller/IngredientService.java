@@ -13,17 +13,17 @@ public class IngredientService {
 	@Autowired
 	private IngredientRepository ingredientRepository;
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient saveIngredient(Ingredient ingredient) {
 		return ingredientRepository.save(ingredient);
 	}
 	
-	@PreAuthorize("isAuthenticated()")
+	//@PreAuthorize("isAuthenticated()")
 	public Iterable<Ingredient> getAllIngredients(){
 		return ingredientRepository.findAll();
 	}
 	
-	@PreAuthorize("isAuthenticated()")
+	//@PreAuthorize("isAuthenticated()")
 	public Iterable<Ingredient> getIngredientsLike(String search){
 		try {
 	        long l = Long.parseLong(search);
@@ -38,12 +38,12 @@ public class IngredientService {
 	    }
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public void deleteIngredient(Long id) {
 		ingredientRepository.delete(getIngredientById(id));
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient getIngredientById(long articleId) {
 		Ingredient obj = ingredientRepository.findById(articleId).get();
 		return obj;
