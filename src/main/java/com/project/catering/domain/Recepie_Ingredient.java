@@ -21,7 +21,7 @@ public class Recepie_Ingredient {
     private Recepie recepie;
 	
 	@ManyToOne
-    @JoinColumn(name="INGREDIENT_ID")
+    @JoinColumn(name="INGREDIENT_ID", nullable=false)
     private Ingredient ingredient;
 	
 	public long getId() {
