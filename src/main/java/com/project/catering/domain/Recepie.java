@@ -3,6 +3,7 @@ package com.project.catering.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,11 +19,6 @@ public class Recepie {
 	
 	private String name, unitType,recepieType;
 	private double caloriePerPortion, portionPerRecepie;
-	
-	/*@ManyToMany
-    @JoinTable(name="RECEPIE_INGREDIENT",joinColumns=@JoinColumn(name="RECEPIE_ID", referencedColumnName="ID"),
-        inverseJoinColumns=@JoinColumn(name="INGREDIENT_ID", referencedColumnName="ID"))
-	private List<Ingredient> ingredients;*/
 	
 	@OneToMany(mappedBy = "recepie")
     private List<Recepie_Ingredient> Recepie_Ingredients = new ArrayList<Recepie_Ingredient>();
