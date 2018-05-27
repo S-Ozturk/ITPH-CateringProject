@@ -28,7 +28,7 @@
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Get All Recepies",getAllRecepies);
-		//createMenuButton("button2","Add New Ingredient",addIngredient);
+		createMenuButton("button2","Add New Recepie",addRecepie);
 		//createMenuButton("button3","Edit Ingredient",getIngredientsForEdit);
 		//createMenuButton("button4","Delete Ingredient",getIngredientsForDelete);
 		createMenuButton("button5","Add Dummy Recepie",postDummyRecepies);
@@ -403,6 +403,90 @@
 		
 	};
 	
+	//Add New Recepie Function
+	function postRecepie() {  
+		var name = document.getElementById("name_input").value;
+		var unitType = document.getElementById("unit_type_input").value;
+		var recepieType = document.getElementById("recepie_type_input").value;
+		var calorie = document.getElementById("calorie_per_portion_input").value;
+		var portion = document.getElementById("portion_per_recepie_input").value;
+		postData("recepie",'{"name":"'+name+'","unitType":"'+unitType+'","recepieType":"'+recepieType+'","caloriePerPortion":'+calorie+',"portionPerRecepie":'+portion+'}');		
+	};
+	
+	function addRecepie() {  
+		createRecepieForm(null);
+	}
+	
+	//Adding New Recepie and Editing Menu
+	function createRecepieForm(myObj) { 
+		clearContainer();
+		var container = document.getElementById("Container");
+		function addEnterance(id, title, value) {
+			var div = document.createElement("DIV");
+			div.className="row";
+			div.style="margin-top:10px"
+			var label = document.createElement("LABEL");
+			var textNode = document.createTextNode(title);
+			label.appendChild(textNode);
+			label.htmlFor = id+"Input";
+			label.className="col-sm-offset-1 col-sm-2 control-label";
+			div.appendChild(label);
+			var divInput = document.createElement("DIV");
+			divInput.className ="col-sm-8";
+			var input = document.createElement("INPUT");
+			input.className ="form-control";
+			input.id=id+"_input";
+			input.value=value;
+			divInput.appendChild(input);
+			div.appendChild(divInput);
+			container.appendChild(div);
+		}
+		if(myObj != null){
+			addEnterance("id","Id", myObj.id);
+			document.getElementById("id_input").disabled=true;
+			addEnterance("name","Name",myObj.name);
+			addEnterance("unit_type","Unit Type",myObj.unitType);
+			addEnterance("recepie_type","Recepie Type",myObj.recepieType);
+			addEnterance("calorie_per_portion","Calorie Per Portion",myObj.caloriePerPortion);
+			addEnterance("portion_per_recepie","Portion Per Recepie",myObj.portionPerRecepie);
+		}else{
+			addEnterance("name","Name",null);
+			addEnterance("unit_type","Unit Type",null);
+			addEnterance("recepie_type","Recepie Type",null);
+			addEnterance("calorie_per_portion","Calorie Per Portion",null);
+			addEnterance("portion_per_recepie","Portion Per Recepie",null);
+		}
+		var div = document.createElement("DIV");
+		div.className="row";
+		div.style="margin-top:10px"
+		var divButton = document.createElement("DIV");
+		divButton.className ="col-sm-offset-3 col-sm-8";
+		if(myObj != null){
+			var textNode = document.createTextNode("Save Changes");
+			var button = document.createElement("BUTTON");
+			button.onclick = putRecepie;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+			var textNode = document.createTextNode("Cancel");
+			var button = document.createElement("BUTTON");
+			button.onclick = getAllRecepies;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+		}
+		else {
+			var textNode = document.createTextNode("Add Recepie");
+			var button = document.createElement("BUTTON");
+			button.onclick = postRecepie;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+		};
+		div.appendChild(divButton);
+		container.appendChild(div);
+	};
+	
 	function getRecepieListSorted(api,key,sort, firstTime, mode) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -474,10 +558,8 @@
 	function getAllUsers(){
 		if(document.getElementById("searchInput")==null ){
 			createSearchInput("settings/user");
-			alert("new from users");
 		}else{
 			document.getElementById("buttonSearch").onclick = function (){searchData("settings/user")};
-			alert("update from users");
 		};
 		getUserListSorted("settings/user");
 	};
@@ -486,10 +568,8 @@
 	function getAllRoles(){
 		if(document.getElementById("searchInput")==null ){
 			createSearchInput("settings/role");
-			alert("new from roles");
 		}else{
 			document.getElementById("buttonSearch").onclick = function (){searchData("settings/role")};
-			alert("update from roles");
 		};
 		getRoleListSorted("settings/role");
 	};
@@ -604,6 +684,7 @@
 		xhttp.send();
 	}
 	
+	
 	//------------------------------------------
 	//SETTINGS PAGE CODES END
 	//------------------------------------------	
@@ -614,11 +695,8 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myObj = JSON.parse(this.responseText);
-				for (x in myObj) {
-					
-				};
-				document.getElementById("buttonsContainer").innerHTML = txt;
-			};
+				
+			}
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api);
 		xhttp.setRequestHeader("Content-type", "application/json");
@@ -627,7 +705,7 @@
 	
 	// Get Just 1 object for editing
 	function getOneById(api,id) {
-		var myObj, x, txt = "";
+		var myObj;
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
