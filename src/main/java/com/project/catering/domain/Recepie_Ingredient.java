@@ -17,11 +17,11 @@ public class Recepie_Ingredient {
 	private double ingredient_amount;
 	
 	@ManyToOne
-    @JoinColumn(name="RECEPIE_ID")
+    @JoinColumn(name="RECEPIE_ID", referencedColumnName = "ID", nullable=false)
     private Recepie recepie;
 	
 	@ManyToOne
-    @JoinColumn(name="INGREDIENT_ID", nullable=false)
+    @JoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID", nullable=false)
     private Ingredient ingredient;
 	
 	public long getId() {
@@ -35,5 +35,21 @@ public class Recepie_Ingredient {
 	}
 	public void setIngredient_amount(double ingredient_amount) {
 		this.ingredient_amount = ingredient_amount;
+	}
+	
+	public Recepie getRecepie() {
+		return recepie;
+	}
+
+	public void setRecepie(Recepie recepie) {
+		this.recepie = recepie;
+	}
+	
+	public Ingredient getIngredient() {
+		return ingredient;
+	}
+
+	public void setIngredient(Ingredient ingredient) {
+		this.ingredient = ingredient;
 	}
 }
