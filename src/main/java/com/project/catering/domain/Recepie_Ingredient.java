@@ -1,34 +1,46 @@
 package com.project.catering.domain;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
+@IdClass(Recepie_IngredientId.class)
 public class Recepie_Ingredient {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private long recepie_Id;
+	
+	@Id
+	private long ingredient_Id;
 	
 	private double ingredient_amount;
 	
 	@ManyToOne
-    @JoinColumn(name="RECEPIE_ID", referencedColumnName = "ID", nullable=false)
+	//@PrimaryKeyJoinColumn(name="RECEPIE_ID", referencedColumnName = "ID")
+	@JoinColumn(name = "recepie_Id", updatable = false, insertable = false, referencedColumnName = "id")
     private Recepie recepie;
 	
 	@ManyToOne
-    @JoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID", nullable=false)
+	//@PrimaryKeyJoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID")
+	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false, referencedColumnName = "id")
     private Ingredient ingredient;
 	
-	public long getId() {
-		return id;
+	
+	public long getRecepieId() {
+		return recepie_Id;
 	}
-	public void setId(long id) {
-		this.id = id;
+	public void setRecepieId(long recepie_Id) {
+		this.recepie_Id = recepie_Id;
+	}
+	public long getIngredientId() {
+		return ingredient_Id;
+	}
+	public void setIngredientId(long ingredient_Id) {
+		this.ingredient_Id = ingredient_Id;
 	}
 	public double getIngredient_amount() {
 		return ingredient_amount;
