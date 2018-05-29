@@ -39,32 +39,30 @@ public class Recepie_IngredientEndpoint {
 		return Response.ok(recepie_Ingredient).build();
 	}
 	
-	@Path("/{recepie_id}/recepie")
+	@Path("/{recepieid}/recepie")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getByRecepie ( @PathParam("recepie_id") int id){
+	public Response getByRecepie ( @PathParam("recepieid") int id){
 		Iterable<Recepie_Ingredient> recepie_Ingredient =  recepie_IngredientService.getRecepie_IngredientByRecepie_id(id);
 		return Response.ok(recepie_Ingredient).build();
 	}
 	
-	@Path("/{ingredient_id}/ingredient")
+	@Path("/{ingredientid}/ingredient")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getByIngredient ( @PathParam("ingredient_id") int id){
+	public Response getByIngredient ( @PathParam("ingredientid") int id){
 		Iterable<Recepie_Ingredient> recepie_Ingredient =  recepie_IngredientService.getRecepie_IngredientByIngredient_id(id);
 		return Response.ok(recepie_Ingredient).build();
 	}
 	
-	
-	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response changeRecepie_Ingredient(Recepie_Ingredient recepie_Ingredient){
-		Recepie_Ingredient result = recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
-		return Response.accepted(result.getId()).build();	
+	public void changeRecepie_Ingredient(Recepie_Ingredient recepie_Ingredient){
+		recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 	}
 	
+	/*
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -72,6 +70,7 @@ public class Recepie_IngredientEndpoint {
 		Recepie_Ingredient result = recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 		return Response.accepted(result.getId()).build();	
 	}
+	*/
 	
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)

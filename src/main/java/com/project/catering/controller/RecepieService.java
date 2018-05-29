@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.catering.domain.Ingredient;
 import com.project.catering.domain.Recepie;
 
 @Service
@@ -17,7 +18,7 @@ public class RecepieService {
 	public Recepie saveRecepie(Recepie recepie) {
 		return recepieRepository.save(recepie);
 	}
-	
+		
 	//@PreAuthorize("isAuthenticated()")
 	public Iterable<Recepie> getAllRecepies(){
 		return recepieRepository.findAll();
@@ -38,7 +39,7 @@ public class RecepieService {
 		recepieRepository.delete(getRecepieById(id));
 	}
 	
-	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
+	//@PreAuthorize("isAuthenticated()")
 	public Recepie getRecepieById(long articleId) {
 		Recepie obj = recepieRepository.findById(articleId).get();
 		return obj;

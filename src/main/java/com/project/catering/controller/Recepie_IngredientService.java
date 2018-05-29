@@ -48,7 +48,7 @@ public class Recepie_IngredientService {
 		recepie_IngredientRepository.delete(getRecepie_IngredientById(id));
 	}
 	
-	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
+	//@PreAuthorize("isAuthenticated()")
 	public Recepie_Ingredient getRecepie_IngredientById(long articleId) {
 		Recepie_Ingredient obj = recepie_IngredientRepository.findById(articleId).get();
 		return obj;

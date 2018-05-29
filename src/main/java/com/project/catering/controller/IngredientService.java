@@ -43,7 +43,7 @@ public class IngredientService {
 		ingredientRepository.delete(getIngredientById(id));
 	}
 	
-	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
+	//@PreAuthorize("isAuthenticated()")
 	public Ingredient getIngredientById(long articleId) {
 		Ingredient obj = ingredientRepository.findById(articleId).get();
 		return obj;
