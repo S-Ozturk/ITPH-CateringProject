@@ -32,8 +32,8 @@
 		createMenuButton("button1","Get All Recepies",getAllRecepies);
 		if([[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]] || [[${#httpServletRequest.isUserInRole("ROLE_CHEF")}]]){
 			createMenuButton("button2","Add New Recepie",addRecepie);
-			//createMenuButton("button3","Edit Ingredient",getIngredientsForEdit);
-			//createMenuButton("button4","Delete Ingredient",getIngredientsForDelete);
+			createMenuButton("button3","Edit Recepie",getRecepiesForEdit);
+			createMenuButton("button4","Delete Recepie",getRecepiesForDelete);
 		};
 		createMenuButton("button5","Add Dummy Recepie",postDummyRecepies);
 	};
@@ -399,7 +399,7 @@
 			dropdownSort.onchange = getAllRecepiesSorted;
 			dropdownSortDesc.onchange = getAllRecepiesSorted;
 		};
-		getRecepieListSorted("recepie","id",false,true,0)
+		getRecepieListSorted("recepie","name",false,true,0)
 	};
 	
 	//For deciding sort column and direction
@@ -411,10 +411,35 @@
 		else
 			getRecepieListSorted("recepie",key,false,false,0);
 		document.getElementById("dropdownSort").value = key;
-		
 	};
 	
+	//---------------Delete Recepie Start-----------------
+	function getRecepiesForDelete() {  
+		getRecepieListSorted("recepie","id",false,true,1);
+	};
+	
+	function deleteRecepie(id){
+		alert(id);
+		if(confirm("Want to delete?")) {
+			deleteData("recepie",id);
+			deleteData('"recepie_ingredient/'+id+'/recepie/delete"',id);
+		}
+	};
+	//----------------Delete Recepie End-------------------
+
+	//----------------Edit Recepie Start------------------
+	function getRecepiesForEdit() {  
+		getRecepieListSorted("recepie","name",false,true,2);
+	};
+	
+	/*function editRecepie(id) {  
+		getOneById("recepie",id);
+	}*/
+	//-----------------Edit Recepie End--------------------
+	
+	
 	//Add New Recepie Function
+	//Also Checks Recepie has any Ingredient(s)
 	function checkPostRecepie() {  
 		var checkboxs = document.getElementsByTagName("input");
 		var checkboxList =[];
@@ -437,6 +462,7 @@
 		};
 	};
 	
+	//Get's data for recepie from and converts to JSON Post Data
 	function postRecepie() {	
 		var name = document.getElementById("name_input").value;
 		var unitType = document.getElementById("unit_type_input").value;
@@ -567,7 +593,7 @@
 						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
 						buttonDelete.appendChild(nodeText);
 						buttonDelete.value=myObj.id;
-						//buttonDelete.onclick=function (){deleteIngredient(this.value)};
+						buttonDelete.onclick=function (){deleteRecepie(this.value)};
 						row.appendChild(buttonDelete);
 						break;
 						

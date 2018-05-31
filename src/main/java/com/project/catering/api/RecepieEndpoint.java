@@ -75,7 +75,7 @@ public class RecepieEndpoint {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public void deleteRecepie(Long recepieid){
+	public void deleteRecepie(int recepieid){
 		recepieService.deleteRecepie(recepieid);
 	}
 	

@@ -1,6 +1,5 @@
 package com.project.catering.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -23,7 +22,7 @@ public class Recepie {
 	
 	@OneToMany(fetch = FetchType.EAGER , mappedBy = "recepie")
     private List<Recepie_Ingredient> ingredients;
-	
+    
 	public long getId() {
 		return id;
 	}
@@ -60,16 +59,20 @@ public class Recepie {
 	public void setPortionPerRecepie(double portionPerRecepie) {
 		this.portionPerRecepie = portionPerRecepie;
 	}
+	
 	/*public void addIngredient(Ingredient ingredient, double amount) {
-		Recepie_Ingredient recepie_ingredient = new Recepie_Ingredient();
-		recepie_ingredient.setIngredient(ingredient);
-		recepie_ingredient.setRecepie(this);
-		recepie_ingredient.setRecepieId(this.getId());
-		recepie_ingredient.setIngredientId(ingredient.getId());
-		recepie_ingredient.setIngredient_amount(amount);
+		Recepie_Ingredient recepie_Ingredient = new Recepie_Ingredient();
+	    recepie_Ingredient.setIngredient(ingredient);
+	    recepie_Ingredient.setRecepie(this);
+	    recepie_Ingredient.setIngredientId(ingredient.getId());
+	    recepie_Ingredient.setRecepieId(this.getId());
+	    recepie_Ingredient.setIngredient_amount(amount);
 	    if(this.ingredients == null)
 	       this.ingredients = new ArrayList<>();
-	    this.ingredients.add(recepie_ingredient);
+
+	    this.ingredients.add(recepie_Ingredient);
+	    // Also add the recepie_Ingredient object to the ingredient.
+	    //ingredient.getRecepies().add(recepie_Ingredient);
 	}*/
 	
 }

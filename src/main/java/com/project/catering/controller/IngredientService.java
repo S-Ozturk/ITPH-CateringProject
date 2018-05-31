@@ -12,6 +12,9 @@ import com.project.catering.domain.Ingredient;
 public class IngredientService {
 	@Autowired
 	private IngredientRepository ingredientRepository;
+	
+	@Autowired
+	private Recepie_IngredientService recepie_IngredientRepository;
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient saveIngredient(Ingredient ingredient) {
@@ -39,7 +42,8 @@ public class IngredientService {
 	}
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
-	public void deleteIngredient(Long id) {
+	public void deleteIngredient(int id) {
+		recepie_IngredientRepository.deleteRecepie_IngredientArray(recepie_IngredientRepository.getRecepie_IngredientByIngredient_id(id));
 		ingredientRepository.delete(getIngredientById(id));
 	}
 	
@@ -47,5 +51,5 @@ public class IngredientService {
 	public Ingredient getIngredientById(long articleId) {
 		Ingredient obj = ingredientRepository.findById(articleId).get();
 		return obj;
-	}	
+	}
 }

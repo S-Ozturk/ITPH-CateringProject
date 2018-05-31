@@ -44,13 +44,21 @@ public class Recepie_IngredientService {
 		};
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
-	public void deleteRecepie_Ingredient(Long id) {
-		recepie_IngredientRepository.delete(getRecepie_IngredientById(id));
+	public void deleteRecepie_Ingredient(Recepie_Ingredient recepie_Ingredient) {
+		recepie_IngredientRepository.delete(recepie_Ingredient);
 	}
 	
 	//@PreAuthorize("isAuthenticated()")
 	public Recepie_Ingredient getRecepie_IngredientById(long articleId) {
 		Recepie_Ingredient obj = recepie_IngredientRepository.findById(articleId).get();
 		return obj;
+	}
+
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
+	public void deleteRecepie_IngredientArray(Iterable<Recepie_Ingredient> recepie_Ingredient) {
+		for(Recepie_Ingredient ri: recepie_Ingredient) {
+			System.out.println(ri.getIngredientId() + " - " + ri.getRecepieId());
+			deleteRecepie_Ingredient(ri);
+		}
 	}	
 }

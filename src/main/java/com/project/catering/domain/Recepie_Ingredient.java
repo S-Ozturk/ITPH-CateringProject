@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @IdClass(Recepie_IngredientId.class)
@@ -28,7 +27,6 @@ public class Recepie_Ingredient {
 	//@PrimaryKeyJoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID")
 	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false, referencedColumnName = "id")
     private Ingredient ingredient;
-	
 	
 	public long getRecepieId() {
 		return recepie_Id;
