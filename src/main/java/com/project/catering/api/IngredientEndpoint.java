@@ -66,7 +66,7 @@ public class IngredientEndpoint {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public void deleteIngredient(Long ingredientid){
+	public void deleteIngredient(int ingredientid){
 		ingredientService.deleteIngredient(ingredientid);
 	}
 	

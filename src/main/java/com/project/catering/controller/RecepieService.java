@@ -5,14 +5,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.project.catering.domain.Ingredient;
 import com.project.catering.domain.Recepie;
+import com.project.catering.controller.Recepie_IngredientService;
 
 @Service
 @Transactional
 public class RecepieService {
 	@Autowired
 	private RecepieRepository recepieRepository;
+	
+	@Autowired
+	private Recepie_IngredientService recepie_IngredientRepository;
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public Recepie saveRecepie(Recepie recepie) {
@@ -35,7 +38,8 @@ public class RecepieService {
 	}
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
-	public void deleteRecepie(Long id) {
+	public void deleteRecepie(int id) {
+		recepie_IngredientRepository.deleteRecepie_IngredientArray(recepie_IngredientRepository.getRecepie_IngredientByRecepie_id(id));
 		recepieRepository.delete(getRecepieById(id));
 	}
 	
@@ -44,4 +48,5 @@ public class RecepieService {
 		Recepie obj = recepieRepository.findById(articleId).get();
 		return obj;
 	}	
+	
 }

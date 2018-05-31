@@ -4,7 +4,12 @@ import java.io.Serializable;
 
 public class Recepie_IngredientId implements Serializable{
 
-	 private long recepie_Id;
+	 /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8013410775416958952L;
+
+	private long recepie_Id;
 
 	 private long ingredient_Id;
 	

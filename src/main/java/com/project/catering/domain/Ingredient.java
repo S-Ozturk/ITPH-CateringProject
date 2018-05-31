@@ -1,18 +1,13 @@
 package com.project.catering.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Ingredient {
@@ -23,8 +18,8 @@ public class Ingredient {
 	
 	private String name, type, unitType;
 	private double caloriePerUnit;
-	
-	@OneToMany(mappedBy = "ingredient")
+
+	@OneToMany(fetch = FetchType.EAGER ,mappedBy = "ingredient")
     private List<Recepie_Ingredient> recepies;
     
 	public long getId() {
@@ -56,6 +51,5 @@ public class Ingredient {
 	}
 	public void setCaloriePerUnit(double caloriePerUnit) {
 		this.caloriePerUnit = caloriePerUnit;
-	}	
-	
+	}
 }

@@ -70,13 +70,5 @@ public class Recepie_IngredientEndpoint {
 		Recepie_Ingredient result = recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 		return Response.accepted(result.getId()).build();	
 	}
-	*/
-	
-	@DELETE
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public void deleteRecepie_Ingredient(Long recepie_Ingredientid){
-		recepie_IngredientService.deleteRecepie_Ingredient(recepie_Ingredientid);
-	}
-	
+	*/	
 }
