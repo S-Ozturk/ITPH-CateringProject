@@ -62,13 +62,12 @@ public class Recepie_IngredientEndpoint {
 		recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 	}
 	
-	/*
+	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response updateRecepie_Ingredient(Recepie_Ingredient recepie_Ingredient){
-		Recepie_Ingredient result = recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
-		return Response.accepted(result.getId()).build();	
+	public void updateRecepie_Ingredient(Recepie_Ingredient recepie_Ingredient){
+		recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 	}
-	*/	
+	
 }

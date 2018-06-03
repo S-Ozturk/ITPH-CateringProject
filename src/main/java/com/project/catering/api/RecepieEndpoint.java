@@ -56,14 +56,6 @@ public class RecepieEndpoint {
 		return Response.accepted(result.getId()).build();	
 	}
 	
-	/*@Path("/{ingredient}/{amount}/addingredient")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
-	public void addIngredient( @PathParam("ingredient") Ingredient ingredient,  @PathParam("amount") double amount){
-		recepieService.addIngredient(ingredient, amount);
-	}*/
-	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
