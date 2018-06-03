@@ -189,14 +189,17 @@
 	//------------------------------------------
 	//INGREDIENTS PAGE CODES START
 	//------------------------------------------	
-	
-	function getAllIngredients() {
+	function createIngredientDropdown(){
 		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
 			creatOrderDropdown();
 			createSearchInput("ingredient");
 			dropdownSort.onchange = getAllIngredientsSorted;
 			dropdownSortDesc.onchange = getAllIngredientsSorted;
 		};
+	};
+	
+	function getAllIngredients() {
+		createIngredientDropdown()
 		getIngredientListSorted("ingredient","id",false,true,0)
 	};
 	
@@ -233,6 +236,7 @@
 	};
 	
 	function getIngredientsForDelete() {  
+		createIngredientDropdown()
 		getIngredientListSorted("ingredient","id",false,true,1);
 	};	
 	
@@ -241,6 +245,7 @@
 	}
 	
 	function getIngredientsForEdit() {  
+		createIngredientDropdown()
 		getIngredientListSorted("ingredient","id",false,true,2);
 	};
 	
@@ -332,6 +337,8 @@
 				myArr = JSON.parse(this.responseText);
 				myArr = sortArray(myArr,key, sort);
 				var table = document.createElement("Table");
+				var isEmpty = false;
+				if(document.getElementById("dropdownSort").value.length == 0) {isEmpty = true;}
 				for (x in myArr) {
 					var myObj = myArr[x];
 					var row = document.createElement("TR");
@@ -340,7 +347,7 @@
 						var textNode = document.createTextNode(myObj[y]);
 						col.appendChild(textNode);
 						row.appendChild(col);
-						if(firstTime && x==0){
+						if(x==0 && isEmpty){
 							var option = document.createElement("OPTION");
 							var optionText = document.createTextNode(y);
 							option.appendChild(optionText);
@@ -391,14 +398,17 @@
 	//------------------------------------------
 	//RECEPIES PAGE CODES START
 	//------------------------------------------	
-	
-	function getAllRecepies() {
+	function recepieDropdownCreate(){
 		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
 			creatOrderDropdown();
 			createSearchInput("recepie");
 			dropdownSort.onchange = getAllRecepiesSorted;
 			dropdownSortDesc.onchange = getAllRecepiesSorted;
 		};
+	};
+	
+	function getAllRecepies() {
+		recepieDropdownCreate();
 		getRecepieListSorted("recepie","name",false,true,0)
 	};
 	
@@ -414,12 +424,12 @@
 	};
 	
 	//---------------Delete Recepie Start-----------------
-	function getRecepiesForDelete() {  
+	function getRecepiesForDelete() { 
+		recepieDropdownCreate();
 		getRecepieListSorted("recepie","id",false,true,1);
 	};
 	
 	function deleteRecepie(id){
-		alert(id);
 		if(confirm("Want to delete?")) {
 			deleteData("recepie",id);
 			deleteData('"recepie_ingredient/'+id+'/recepie/delete"',id);
@@ -429,18 +439,30 @@
 
 	//----------------Edit Recepie Start------------------
 	function getRecepiesForEdit() {  
-		getRecepieListSorted("recepie","name",false,true,2);
+		recepieDropdownCreate();
+		getRecepieListSorted("recepie","id",false,true,2);
 	};
 	
-	/*function editRecepie(id) {  
+	function editRecepie(id) {  
 		getOneById("recepie",id);
-	}*/
+	}
+	
+	function putRecepie() {  
+		var id = document.getElementById("id_input").value;
+		var name = document.getElementById("name_input").value;
+		var unitType = document.getElementById("unit_type_input").value;
+		var recepieType = document.getElementById("recepie_type_input").value;
+		var calorie = document.getElementById("calorie_per_portion_input").value;
+		var portion = document.getElementById("portion_per_recepie_input").value;
+		checkPostRecepie(true);
+		putData("recepie",'{"id":"'+ id +'","name":"'+name+'","unitType":"'+unitType+'","recepieType":"'+recepieType+'","caloriePerPortion":'+calorie+',"portionPerRecepie":'+portion+'}');
+	};
 	//-----------------Edit Recepie End--------------------
 	
 	
 	//Add New Recepie Function
 	//Also Checks Recepie has any Ingredient(s)
-	function checkPostRecepie() {  
+	function checkPostRecepie(putMode) {  
 		var checkboxs = document.getElementsByTagName("input");
 		var checkboxList =[];
 		var amountList =[];
@@ -453,9 +475,13 @@
 		    };
 		};
 		if(checkboxList.length >= 1){
-			var newId = document.getElementById("newId").innerHTML;
+			var id_input = document.getElementById("id_input").value;
 			for(var i = 0; i < checkboxList.length; i++) {
-				postData("recepie_ingredient",'{"recepieId":'+ newId +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
+				if(putMode== true){
+					putData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
+				}else{
+					postData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
+				}
 			};			
 		}else{
 			alert("Please select 1 or more ingredients with amount for adding recepie");
@@ -522,6 +548,7 @@
 		var divButton = document.createElement("DIV");
 		divButton.className ="col-sm-offset-3 col-sm-8";
 		if(myObj != null){
+			getIngredientsForRecepie("ingredient");
 			var textNode = document.createTextNode("Save Changes");
 			var button = document.createElement("BUTTON");
 			button.onclick = putRecepie;
@@ -534,6 +561,7 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
+			getSelectedIngredientsData("recepie_ingredient",myObj.id)
 		}
 		else {
 			var textNode = document.createTextNode("Add Recepie");
@@ -549,9 +577,9 @@
 	};
 	
 	function createIngredientsForRecepieForm() { 
-		var textNode = document.createTextNode("Add Ingredients");
+		var textNode = document.createTextNode("Save Ingredients");
 		var button = document.createElement("BUTTON");
-		button.onclick = checkPostRecepie;
+		button.onclick = function(){checkPostRecepie(false)};
 		button.className="btn btn-default";
 		button.appendChild(textNode);
 		var element = document.getElementById("addRecepie");
@@ -559,6 +587,7 @@
 		element.parentNode.appendChild(button);
 		getIngredientsForRecepie("ingredient");
 	};
+	
 	
 	function getRecepieListSorted(api,key,sort, firstTime, mode) {
 		var myObj, myArr, x, txt = "";
@@ -571,6 +600,8 @@
 				myArr = JSON.parse(this.responseText);
 				myArr = sortArray(myArr,key, sort);
 				var table = document.createElement("Table");
+				var isEmpty = false;
+				if(document.getElementById("dropdownSort").value.length == 0) {isEmpty = true;}
 				for (x in myArr) {
 					var myObj = myArr[x];
 					var row = document.createElement("TR");
@@ -579,7 +610,7 @@
 						var textNode = document.createTextNode(myObj[y]);
 						col.appendChild(textNode);
 						row.appendChild(col);
-						if(firstTime && x==0){
+						if(x == 0 && isEmpty){
 							var option = document.createElement("OPTION");
 							var optionText = document.createTextNode(y);
 							option.appendChild(optionText);
@@ -602,7 +633,7 @@
 						var nodeText = document.createTextNode("Edit - " + myObj.name);
 						buttonEdit.appendChild(nodeText);
 						buttonEdit.value=myObj.id;
-						//buttonEdit.onclick=function (){editIngredient(this.value)};
+						buttonEdit.onclick=function (){editRecepie(this.value)};
 						row.appendChild(buttonEdit);
 						break;
 					default:
@@ -671,6 +702,23 @@
 			};
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	function getSelectedIngredientsData(api, id) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				for(x in myObj){
+					document.getElementById(myObj[x].ingredientId).checked = true;
+					document.getElementById(myObj[x].ingredientId + "_input").value = myObj[x].ingredient_amount;
+				}
+			}
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/recepie");
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
 	}
@@ -838,7 +886,13 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myObj = JSON.parse(this.responseText);
-				createIngredientForm(myObj);
+				switch(api){
+				case "ingredient":
+					createIngredientForm(myObj);
+					break;
+				case "recepie":
+					createRecepieForm(myObj);
+				}
 			};
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
@@ -859,7 +913,7 @@
 						var text = document.createTextNode(this.responseText);
 						label.appendChild(text);
 						label.style.display = "none";
-						label.id="newId";
+						label.id="id_input";
 						document.getElementById("Container").appendChild(label);
 						break;
 				}

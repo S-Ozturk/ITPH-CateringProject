@@ -49,16 +49,15 @@ public class Recepie_IngredientService {
 	}
 	
 	//@PreAuthorize("isAuthenticated()")
-	public Recepie_Ingredient getRecepie_IngredientById(long articleId) {
-		Recepie_Ingredient obj = recepie_IngredientRepository.findById(articleId).get();
+	public Recepie_Ingredient getRecepie_IngredientById(long ingredient_id) {
+		Recepie_Ingredient obj = recepie_IngredientRepository.findById(ingredient_id).get();
 		return obj;
 	}
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public void deleteRecepie_IngredientArray(Iterable<Recepie_Ingredient> recepie_Ingredient) {
 		for(Recepie_Ingredient ri: recepie_Ingredient) {
-			System.out.println(ri.getIngredientId() + " - " + ri.getRecepieId());
 			deleteRecepie_Ingredient(ri);
 		}
-	}	
+	}
 }
