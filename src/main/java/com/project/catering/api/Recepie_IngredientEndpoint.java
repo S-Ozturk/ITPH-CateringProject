@@ -70,4 +70,11 @@ public class Recepie_IngredientEndpoint {
 		recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 	}
 	
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public void deleteRecepie(Iterable<Recepie_Ingredient> recepie_Ingredient){
+		recepie_IngredientService.deleteRecepie_IngredientArray(recepie_Ingredient);
+	}
+	
 }
