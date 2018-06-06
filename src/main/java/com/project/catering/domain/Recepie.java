@@ -7,6 +7,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 
@@ -20,8 +22,13 @@ public class Recepie {
 	private String name, unitType,recepieType;
 	private double caloriePerPortion, portionPerRecepie;
 	
-	@OneToMany(fetch = FetchType.EAGER , mappedBy = "recepie")
+	@OneToMany(fetch = FetchType.EAGER ,mappedBy = "recepie")
+	//@JoinTable(name = "recepie_ingredient", joinColumns = @JoinColumn(name = "recepie_Id"), inverseJoinColumns = @JoinColumn(name = "id"))
     private List<Recepie_Ingredient> ingredients;
+    
+    /*@OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "meal_list_recepie", joinColumns = @JoinColumn(name = "recepieformeal_Id"), inverseJoinColumns = @JoinColumn(name = "id"))
+    private List<MealList_Recepie> mealLists;*/
     
 	public long getId() {
 		return id;
@@ -59,20 +66,5 @@ public class Recepie {
 	public void setPortionPerRecepie(double portionPerRecepie) {
 		this.portionPerRecepie = portionPerRecepie;
 	}
-	
-	/*public void addIngredient(Ingredient ingredient, double amount) {
-		Recepie_Ingredient recepie_Ingredient = new Recepie_Ingredient();
-	    recepie_Ingredient.setIngredient(ingredient);
-	    recepie_Ingredient.setRecepie(this);
-	    recepie_Ingredient.setIngredientId(ingredient.getId());
-	    recepie_Ingredient.setRecepieId(this.getId());
-	    recepie_Ingredient.setIngredient_amount(amount);
-	    if(this.ingredients == null)
-	       this.ingredients = new ArrayList<>();
-
-	    this.ingredients.add(recepie_Ingredient);
-	    // Also add the recepie_Ingredient object to the ingredient.
-	    //ingredient.getRecepies().add(recepie_Ingredient);
-	}*/
 	
 }
