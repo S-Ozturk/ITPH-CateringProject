@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.project.catering.controller.MealList_RecepieService;
 import com.project.catering.domain.MealList_Recepie;
 
-@Path("recepie_ingredient")
+@Path("meallist_recepie")
 @Component
 public class MealList_RecepieEndpoint {
 	
