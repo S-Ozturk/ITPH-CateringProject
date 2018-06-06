@@ -464,13 +464,15 @@
 	//Also Checks Recepie has any Ingredient(s)
 	function checkPostRecepie(putMode) {  
 		var checkboxs = document.getElementsByTagName("input");
-		var checkboxList =[];
+		var checkboxList = [] , checkboxListUnchecked = [];
 		var amountList =[];
 		for(var i = 0; i < checkboxs.length; i++) {
 		    if(checkboxs[i].type == "checkbox") {
 		    	if(checkboxs[i].checked == true) {
 		    		checkboxList.push(checkboxs[i].id); 
 		    		amountList.push(document.getElementById(checkboxs[i].id+"_input").value);
+		    	}else{
+		    		checkboxListUnchecked.push(checkboxs[i].id);
 		    	};
 		    };
 		};
@@ -482,7 +484,10 @@
 				}else{
 					postData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
 				}
-			};			
+			};	
+			for(var i = 0; i < checkboxListUnchecked.length; i++) {
+				deleteData("recepie_ingredient",'[{"recepieId":'+ id_input +',"ingredientId":'+ checkboxListUnchecked[i] +'}]');
+			}
 		}else{
 			alert("Please select 1 or more ingredients with amount for adding recepie");
 		};
@@ -712,6 +717,10 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				myObj = JSON.parse(this.responseText);
+				if(myObj != "") {
+					alert("Ingredients for " + myObj[0].recepie.name + " recepie loading for editing");
+					//I need a delay, otherwise getting ingredients code working late
+				}; 
 				for(x in myObj){
 					document.getElementById(myObj[x].ingredientId).checked = true;
 					document.getElementById(myObj[x].ingredientId + "_input").value = myObj[x].ingredient_amount;
@@ -953,9 +962,11 @@
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 204) {
-				var container = document.getElementById("Container");
-				container.innerHTML = "Item Deleted With Id: "+ data;
-			}
+				if(api != "recepie_ingredient"){
+					var container = document.getElementById("Container");
+					container.innerHTML = "Item Deleted With Id: "+ data;
+				};
+			};
 		};
 		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
 		xhttp.setRequestHeader("Content-type", "application/json");
