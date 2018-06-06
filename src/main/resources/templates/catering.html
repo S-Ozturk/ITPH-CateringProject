@@ -5,25 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catering Project</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <script src="js/bootstrap.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 	function changeToHome() {
 		clearContainer();
 		clearMenuRow();
-	};
-	
-	function changeToMealList(){
-		clearMenuRow();
-		clearContainer();
-		createMenuButton("button1","Get All Meal Lists",getAllMealLists);
-		if([[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]] || [[${#httpServletRequest.isUserInRole("ROLE_NUTRITIONIST")}]] ){
-			createMenuButton("button2","Add New Meal List",addMealList);
-			createMenuButton("button3","Edit Meal List",getMealListsForEdit);
-			createMenuButton("button4","Delete Meal List",getMealListsForDelete);
-		};
-		//createMenuButton("button5","Add Dummy Meal Lists",postDummyMealList);
 	};
 	
 	function changeToIngredient() {
@@ -57,6 +45,18 @@
 		createMenuButton("button2","Add Dummy Users",postDummyUsers);
 		createMenuButton("button3","Roles",getAllRoles);
 		createMenuButton("button4","Add Dummy Roles",postDummyRoles);
+	};
+	
+	function changeToMealList(){
+		clearMenuRow();
+		clearContainer();
+		createMenuButton("button1","Get All Meal Lists",getAllMealLists);
+		if([[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]] || [[${#httpServletRequest.isUserInRole("ROLE_NUTRITIONIST")}]] ){
+			createMenuButton("button2","Add New Meal List",addMealList);
+			createMenuButton("button3","Edit Meal List",getMealListsForEdit);
+			createMenuButton("button4","Delete Meal List",getMealListsForDelete);
+		};
+		createMenuButton("button5","Add Dummy Meal Lists",postDummyMealLists);
 	};
 	
 	function clearContainer(){
@@ -193,6 +193,12 @@
 		postData("recepie",'{"name":"Meat Balls Coctail","unitType":"Lunch Plate","recepieType":"Main Dishes","caloriePerPortion":94,"portionPerRecepie":8}');		
 	};
 	
+	function postDummyMealLists() {
+		postData("meallist",'{"name":"Chicken + Rice + Salad","mealType":"Lunch","caloriePerPerson":1200}');
+		postData("meallist",'{"name":"Soup + Meat Balls + Fries + Desert","mealType":"Dinner","caloriePerPerson":2000}');
+		postData("meallist",'{"name":"Sandwich + Basic Breakfast","mealType":"Breakfast","caloriePerPerson":900}');
+	};
+	
 	//------------------------------------------
 	//DUMMY DATA CODES END - !! DELETE IN FINAL VERSION !!
 	//------------------------------------------
@@ -204,8 +210,8 @@
 		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
 			creatOrderDropdown();
 			createSearchInput("meallist");
-			dropdownSort.onchange = getListSorted /*getAllMealListsSorted*/;
-			dropdownSortDesc.onchange = getListSorted;
+			dropdownSort.onchange = getAllMealListsSorted;
+			dropdownSortDesc.onchange = getAllMealListsSorted;
 		};
 	};
 	
@@ -213,6 +219,237 @@
 		mealListDropdownCreate();
 		getListSorted("meallist","name",false,true,0)
 	};
+	
+	function getAllMealListsSorted() {
+		var key = document.getElementById("dropdownSort").value;
+		var desc = document.getElementById("dropdownSortDesc").value;
+		if(desc=="Descending")
+			getListSorted("meallist",key,true,false,0);
+		else
+			getListSorted("meallist",key,false,false,0);
+		document.getElementById("dropdownSort").value = key;
+		
+	};
+	
+	//Add New Meal List Function
+	function postMealList() {  
+		var name = document.getElementById("name_input").value;
+		var type = document.getElementById("meal_type_input").value;
+		var calorie = document.getElementById("calorie_per_person_input").value;
+		postData("meallist",'{"name":"'+name+'","mealType":"'+type+'","caloriePerPerson":'+calorie+'}');
+		createRecepiesForMealListForm();
+	};
+	
+	function addMealList() {  
+		createMealListForm(null);
+	}
+	
+	//Adding New Meal List and Editing Menu
+	function createMealListForm(myObj) { 
+		clearContainer();
+		var container = document.getElementById("Container");
+		function addEnterance(id, title, value) {
+			var div = document.createElement("DIV");
+			div.className="row";
+			div.style="margin-top:10px";
+			var label = document.createElement("LABEL");
+			var textNode = document.createTextNode(title);
+			label.appendChild(textNode);
+			label.htmlFor = id+"Input";
+			label.className="col-sm-offset-1 col-sm-2 control-label";
+			div.appendChild(label);
+			var divInput = document.createElement("DIV");
+			divInput.className ="col-sm-8";
+			var input = document.createElement("INPUT");
+			input.className ="form-control";
+			input.id=id+"_input";
+			input.value=value;
+			divInput.appendChild(input);
+			div.appendChild(divInput);
+			container.appendChild(div);
+		}
+		if(myObj != null){
+			addEnterance("id","Id", myObj.id);
+			document.getElementById("id_input").disabled=true;
+			addEnterance("name","Name",myObj.name);
+			addEnterance("meal_type","Meal Type",myObj.mealType);
+			addEnterance("calorie_per_person","Calorie Per Person",myObj.caloriePerPerson);
+		}else{
+			addEnterance("name","Name",null);
+			addEnterance("meal_type","Meal Type",null);
+			addEnterance("calorie_per_person","Calorie Per Person",null);
+		}
+		var div = document.createElement("DIV");
+		div.className="row";
+		div.style="margin-top:10px"
+		var divButton = document.createElement("DIV");
+		divButton.className ="col-sm-offset-3 col-sm-8";
+		if(myObj != null){
+			getRecepiesForMealList("recepie");
+			var textNode = document.createTextNode("Save Changes");
+			var button = document.createElement("BUTTON");
+			button.onclick = putMealList;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+			var textNode = document.createTextNode("Cancel");
+			var button = document.createElement("BUTTON");
+			button.onclick = getAllMealLists;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+			getSelectedIngredientsData("recepie_ingredient",myObj.id)
+		}
+		else {
+			var textNode = document.createTextNode("Add Meal List");
+			var button = document.createElement("BUTTON");
+			button.id = "addMealList";
+			button.onclick = postMealList;
+			button.className="btn btn-default";
+			button.appendChild(textNode);
+			divButton.appendChild(button);
+		};
+		container.appendChild(div);
+		div.appendChild(divButton);
+	};
+	
+	function createRecepiesForMealListForm() { 
+		var textNode = document.createTextNode("Save Recepies");
+		var button = document.createElement("BUTTON");
+		button.onclick = function(){checkPostMealList(false)};
+		button.className="btn btn-default";
+		button.appendChild(textNode);
+		var element = document.getElementById("addMealList");
+		element.className = "btn btn-default disabled";
+		element.parentNode.appendChild(button);
+		getRecepiesForMealList("recepie");
+	};
+	
+	//Add New Meal List Function
+	//Also Checks Meal List has any Recepie(s)
+	function checkPostMealList(putMode) {  
+		var checkboxs = document.getElementsByTagName("input");
+		var checkboxList = [] , checkboxListUnchecked = [];
+		var amountList =[];
+		for(var i = 0; i < checkboxs.length; i++) {
+		    if(checkboxs[i].type == "checkbox") {
+		    	if(checkboxs[i].checked == true) {
+		    		checkboxList.push(checkboxs[i].id); 
+		    		amountList.push(document.getElementById(checkboxs[i].id+"_input").value);
+		    	}else{
+		    		checkboxListUnchecked.push(checkboxs[i].id);
+		    	};
+		    };
+		};
+		if(checkboxList.length >= 1){
+			var id_input = document.getElementById("id_input").innerHTML;
+			for(var i = 0; i < checkboxList.length; i++) {
+				if(putMode== true){
+					putData("meallist_recepie",'{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxList[i] +',"recepie_amount":'+ amountList[i] +'}');
+				}else{
+					postData("meallist_recepie",'{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxList[i] +',"recepie_amount":'+ amountList[i] +'}');
+				}
+			};	
+			for(var i = 0; i < checkboxListUnchecked.length; i++) {
+				deleteData("meallist_recepie",'[{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxListUnchecked[i] +'}]');
+			}
+		}else{
+			alert("Please select 1 or more reecepies with amount for adding meal list");
+		};
+	};
+	
+	function getRecepiesForMealList(api) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var container = document.getElementById("Container");
+				var div = document.createElement("DIV");
+				div.className="row";
+				div.style="margin-top:10px";
+				var label = document.createElement("LABEL");
+				var textNode = document.createTextNode("Recepies");
+				label.appendChild(textNode);
+				label.className="col-sm-offset-1 col-sm-2 control-label";
+				div.appendChild(label);
+				var divIngredients = document.createElement("DIV");
+				divIngredients.className ="col-sm-8 table-bordered";
+				div.appendChild(divIngredients);
+				myObj = JSON.parse(this.responseText);
+				myObj = sortArray(myObj,"name", false);
+				for (x in myObj){
+					var divFormGroup = document.createElement("DIV");
+					divFormGroup.className = "col-sm-6 form-group";
+					var checkbox = document.createElement("INPUT");
+					checkbox.className = "col-sm-1";
+					checkbox.type = "checkbox";
+					checkbox.id = myObj[x].id;
+					divFormGroup.appendChild(checkbox);
+					var label = document.createElement("LABEL");
+					var labelText = document.createTextNode(myObj[x].name);
+					label.className = "col-sm-6";
+					label.appendChild(labelText);
+					divFormGroup.appendChild(label);
+					var divInputGroup = document.createElement("DIV");
+					divInputGroup.className = "col-sm-5 input-group";
+					var input = document.createElement("INPUT");
+					input.type = "text";
+					input.id = myObj[x].id + "_input";
+					input.className = "form-control";
+					input.placeholder = "Amount";
+					divInputGroup.appendChild(input);
+					var divInputGroupAddon = document.createElement("DIV");
+					divInputGroupAddon.className = "input-group-addon";
+					var addonText = document.createTextNode("x"+myObj[x].portionPerRecepie + " Portion");
+					divInputGroupAddon.appendChild(addonText);
+					divInputGroup.appendChild(divInputGroupAddon);
+					divFormGroup.appendChild(divInputGroup);
+					divIngredients.appendChild(divFormGroup);
+				};
+				container.appendChild(div);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	
+	
+	//---------------Delete Meal List Start-----------------
+	function getMealListsForDelete() { 
+		mealListDropdownCreate();
+		getListSorted("meallist","id",false,true,1);
+	};
+	
+	function deleteMealList(id){
+		if(confirm("Want to delete?")) {
+			deleteData("meallist",id);
+			//deleteData('"recepie_ingredient/'+id+'/recepie/delete"',id);
+		}
+	};
+	//----------------Delete Meal List End-------------------
+
+	//----------------Edit Meal List Start------------------
+	function getMealListsForEdit() {  
+		mealListDropdownCreate();
+		getListSorted("meallist","id",false,true,2);
+	};
+	
+	function editMealList(id) {  
+		getOneById("meallist",id);
+	}
+	
+	//Update Meal List Function
+	function putMealList() {  
+		var id = document.getElementById("id_input").value;
+		var name = document.getElementById("name_input").value;
+		var mealType = document.getElementById("meal_type_input").value;
+		var calorie = document.getElementById("calorie_per_person_input").value;
+		checkPostMealList(true);
+		putData("meallist",'{"id":"'+ id +'","name":"'+name+'","mealType":"'+mealType+'","caloriePerPerson":'+calorie+'}');
+	};
+	//-----------------Edit Meal List End--------------------
 	
 	//------------------------------------------
 	//MEAL LIST PAGE CODES END
@@ -444,7 +681,7 @@
 		    };
 		};
 		if(checkboxList.length >= 1){
-			var id_input = document.getElementById("id_input").value;
+			var id_input = document.getElementById("id_input").innerHTML;
 			for(var i = 0; i < checkboxList.length; i++) {
 				if(putMode== true){
 					putData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
@@ -823,6 +1060,7 @@
 						document.getElementById("Container").innerHTML = this.responseText+" Item Added";
 						break;
 					case "recepie":
+					case "meallist":
 						var label = document.createElement("LABEL");
 						var text = document.createTextNode(this.responseText);
 						label.appendChild(text);
@@ -906,6 +1144,9 @@
 							case "recepie":
 								deleteRecepie(this.value)
 								break;
+							case "meallist":
+								deleteMealList(this.value)
+								break;
 							};
 						};
 						row.appendChild(buttonDelete);
@@ -922,7 +1163,10 @@
 								editIngredient(this.value);
 								break;
 							case "recepie":
-								deleteRecepie(this.value)
+								editRecepie(this.value)
+								break;
+							case "meallist":
+								editMealList(this.value)
 								break;
 							};
 						};
@@ -946,7 +1190,7 @@
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 204) {
-				if(api != "recepie_ingredient"){
+				if(api != "recepie_ingredient" && api != "meallist_recepie" ){
 					var container = document.getElementById("Container");
 					container.innerHTML = "Item Deleted With Id: "+ data;
 				};
