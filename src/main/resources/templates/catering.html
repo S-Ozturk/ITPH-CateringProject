@@ -14,6 +14,18 @@
 		clearMenuRow();
 	};
 	
+	function changeToMealList(){
+		clearMenuRow();
+		clearContainer();
+		createMenuButton("button1","Get All Meal Lists",getAllMealLists);
+		if([[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]] || [[${#httpServletRequest.isUserInRole("ROLE_NUTRITIONIST")}]] ){
+			createMenuButton("button2","Add New Meal List",addMealList);
+			createMenuButton("button3","Edit Meal List",getMealListsForEdit);
+			createMenuButton("button4","Delete Meal List",getMealListsForDelete);
+		};
+		//createMenuButton("button5","Add Dummy Meal Lists",postDummyMealList);
+	};
+	
 	function changeToIngredient() {
 		clearMenuRow();
 		clearContainer();
@@ -120,16 +132,16 @@
 		switch(api){
 			case "ingredient":
 				if (search==""){
-					getIngredientListSorted(api,"id",false,false,0);
+					getListSorted(api,"id",false,false,0);
 				}else{
-					getIngredientListSorted(api+"/"+search+"/search","id",false,false,0);
+					getListSorted(api+"/"+search+"/search","id",false,false,0);
 				};
 				break;
 			case "recepie":
 				if (search==""){
-					getRecepieListSorted(api);
+					getListSorted(api);
 				}else{
-					getRecepieListSorted(api+"/"+search+"/search");
+					getListSorted(api+"/"+search+"/search");
 				};
 				break;
 			case "settings/role":
@@ -185,6 +197,26 @@
 	//DUMMY DATA CODES END - !! DELETE IN FINAL VERSION !!
 	//------------------------------------------
 	
+	//------------------------------------------
+	//MEAL LIST PAGE CODES START
+	//------------------------------------------	
+	function mealListDropdownCreate(){
+		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
+			creatOrderDropdown();
+			createSearchInput("meallist");
+			dropdownSort.onchange = getListSorted /*getAllMealListsSorted*/;
+			dropdownSortDesc.onchange = getListSorted;
+		};
+	};
+	
+	function getAllMealLists() {
+		mealListDropdownCreate();
+		getListSorted("meallist","name",false,true,0)
+	};
+	
+	//------------------------------------------
+	//MEAL LIST PAGE CODES END
+	//------------------------------------------	
 	
 	//------------------------------------------
 	//INGREDIENTS PAGE CODES START
@@ -200,7 +232,7 @@
 	
 	function getAllIngredients() {
 		createIngredientDropdown()
-		getIngredientListSorted("ingredient","id",false,true,0)
+		getListSorted("ingredient","id",false,true,0)
 	};
 	
 	//For deciding sort column and direction
@@ -208,9 +240,9 @@
 		var key = document.getElementById("dropdownSort").value;
 		var desc = document.getElementById("dropdownSortDesc").value;
 		if(desc=="Descending")
-			getIngredientListSorted("ingredient",key,true,false,0);
+			getListSorted("ingredient",key,true,false,0);
 		else
-			getIngredientListSorted("ingredient",key,false,false,0);
+			getListSorted("ingredient",key,false,false,0);
 		document.getElementById("dropdownSort").value = key;
 		
 	};
@@ -237,7 +269,7 @@
 	
 	function getIngredientsForDelete() {  
 		createIngredientDropdown()
-		getIngredientListSorted("ingredient","id",false,true,1);
+		getListSorted("ingredient","id",false,true,1);
 	};	
 	
 	function addIngredient() {  
@@ -246,7 +278,7 @@
 	
 	function getIngredientsForEdit() {  
 		createIngredientDropdown()
-		getIngredientListSorted("ingredient","id",false,true,2);
+		getListSorted("ingredient","id",false,true,2);
 	};
 	
 	function editIngredient(id) {  
@@ -322,71 +354,6 @@
 		container.appendChild(div);
 	};
 	
-	/*There is no overload in Javascript because of that I had to 
-	change getDataList function  to getIngredientListSorted function 
-	added first time for reading sorting headers
-	added mode to be able to switch standart list to edit mode and delete mode*/
-	function getIngredientListSorted(api,key,sort, firstTime, mode) {
-		var myObj, myArr, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		clearContainer();
-		var container = document.getElementById("Container");
-		
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myArr = JSON.parse(this.responseText);
-				myArr = sortArray(myArr,key, sort);
-				var table = document.createElement("Table");
-				var isEmpty = false;
-				if(document.getElementById("dropdownSort").value.length == 0) {isEmpty = true;}
-				for (x in myArr) {
-					var myObj = myArr[x];
-					var row = document.createElement("TR");
-					for(y in myObj) {
-						var col = document.createElement("TD");
-						var textNode = document.createTextNode(myObj[y]);
-						col.appendChild(textNode);
-						row.appendChild(col);
-						if(x==0 && isEmpty){
-							var option = document.createElement("OPTION");
-							var optionText = document.createTextNode(y);
-							option.appendChild(optionText);
-							option.value=y;
-							dropdownSort.appendChild(option);
-						};
-					};
-					switch(mode){
-					case 1:
-						var buttonDelete = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
-						buttonDelete.appendChild(nodeText);
-						buttonDelete.value=myObj.id;
-						buttonDelete.onclick=function (){deleteIngredient(this.value)};
-						row.appendChild(buttonDelete);
-						break;
-						
-					case 2:
-						var buttonEdit = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("Edit - " + myObj.name);
-						buttonEdit.appendChild(nodeText);
-						buttonEdit.value=myObj.id;
-						buttonEdit.onclick=function (){editIngredient(this.value)};
-						row.appendChild(buttonEdit);
-						break;
-					default:
-						break;
-					};
-					table.appendChild(row);
-				};
-				table.className='table table-striped table-bordered table-hover';
-				container.appendChild(table);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-	
 	function deleteIngredient(id){
 		if(confirm("Want to delete?")) deleteData("ingredient",id);
 	};
@@ -409,7 +376,7 @@
 	
 	function getAllRecepies() {
 		recepieDropdownCreate();
-		getRecepieListSorted("recepie","name",false,true,0)
+		getListSorted("recepie","name",false,true,0)
 	};
 	
 	//For deciding sort column and direction
@@ -417,16 +384,16 @@
 		var key = document.getElementById("dropdownSort").value;
 		var desc = document.getElementById("dropdownSortDesc").value;
 		if(desc=="Descending")
-			getRecepieListSorted("recepie",key,true,false,0);
+			getListSorted("recepie",key,true,false,0);
 		else
-			getRecepieListSorted("recepie",key,false,false,0);
+			getListSorted("recepie",key,false,false,0);
 		document.getElementById("dropdownSort").value = key;
 	};
 	
 	//---------------Delete Recepie Start-----------------
 	function getRecepiesForDelete() { 
 		recepieDropdownCreate();
-		getRecepieListSorted("recepie","id",false,true,1);
+		getListSorted("recepie","id",false,true,1);
 	};
 	
 	function deleteRecepie(id){
@@ -440,7 +407,7 @@
 	//----------------Edit Recepie Start------------------
 	function getRecepiesForEdit() {  
 		recepieDropdownCreate();
-		getRecepieListSorted("recepie","id",false,true,2);
+		getListSorted("recepie","id",false,true,2);
 	};
 	
 	function editRecepie(id) {  
@@ -592,68 +559,6 @@
 		element.parentNode.appendChild(button);
 		getIngredientsForRecepie("ingredient");
 	};
-	
-	
-	function getRecepieListSorted(api,key,sort, firstTime, mode) {
-		var myObj, myArr, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		clearContainer();
-		var container = document.getElementById("Container");
-		
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myArr = JSON.parse(this.responseText);
-				myArr = sortArray(myArr,key, sort);
-				var table = document.createElement("Table");
-				var isEmpty = false;
-				if(document.getElementById("dropdownSort").value.length == 0) {isEmpty = true;}
-				for (x in myArr) {
-					var myObj = myArr[x];
-					var row = document.createElement("TR");
-					for(y in myObj) {
-						var col = document.createElement("TD");
-						var textNode = document.createTextNode(myObj[y]);
-						col.appendChild(textNode);
-						row.appendChild(col);
-						if(x == 0 && isEmpty){
-							var option = document.createElement("OPTION");
-							var optionText = document.createTextNode(y);
-							option.appendChild(optionText);
-							option.value=y;
-							dropdownSort.appendChild(option);
-						};
-					};
-					switch(mode){
-					case 1:
-						var buttonDelete = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
-						buttonDelete.appendChild(nodeText);
-						buttonDelete.value=myObj.id;
-						buttonDelete.onclick=function (){deleteRecepie(this.value)};
-						row.appendChild(buttonDelete);
-						break;
-						
-					case 2:
-						var buttonEdit = document.createElement("BUTTON");
-						var nodeText = document.createTextNode("Edit - " + myObj.name);
-						buttonEdit.appendChild(nodeText);
-						buttonEdit.value=myObj.id;
-						buttonEdit.onclick=function (){editRecepie(this.value)};
-						row.appendChild(buttonEdit);
-						break;
-					default:
-						break;
-					};
-					table.appendChild(row);
-				};
-				table.className='table table-striped table-bordered table-hover';
-				container.appendChild(table);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
 	
 	function getIngredientsForRecepie(api) {
 		var myObj, x, txt = "";
@@ -958,6 +863,85 @@
 	    return array;
 	};
 	
+	function getListSorted(api,key,sort, firstTime, mode) {
+		var myObj, myArr, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		clearContainer();
+		var container = document.getElementById("Container");
+		
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myArr = JSON.parse(this.responseText);
+				myArr = sortArray(myArr,key, sort);
+				var table = document.createElement("Table");
+				var isEmpty = false;
+				if(document.getElementById("dropdownSort").value.length == 0) {isEmpty = true;}
+				for (x in myArr) {
+					var myObj = myArr[x];
+					var row = document.createElement("TR");
+					for(y in myObj) {
+						var col = document.createElement("TD");
+						var textNode = document.createTextNode(myObj[y]);
+						col.appendChild(textNode);
+						row.appendChild(col);
+						if(x==0 && isEmpty){
+							var option = document.createElement("OPTION");
+							var optionText = document.createTextNode(y);
+							option.appendChild(optionText);
+							option.value=y;
+							dropdownSort.appendChild(option);
+						};
+					};
+					switch(mode){
+					case 1:
+						var buttonDelete = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("! Delete ! - " + myObj.name);
+						buttonDelete.appendChild(nodeText);
+						buttonDelete.value=myObj.id;
+						buttonDelete.onclick=function (){
+							switch(api){
+							case "ingredient":
+								deleteIngredient(this.value)
+								break;
+							case "recepie":
+								deleteRecepie(this.value)
+								break;
+							};
+						};
+						row.appendChild(buttonDelete);
+						break;
+						
+					case 2:
+						var buttonEdit = document.createElement("BUTTON");
+						var nodeText = document.createTextNode("Edit - " + myObj.name);
+						buttonEdit.appendChild(nodeText);
+						buttonEdit.value=myObj.id;
+						buttonEdit.onclick=function (){
+							switch(api){
+							case "ingredient":
+								editIngredient(this.value);
+								break;
+							case "recepie":
+								deleteRecepie(this.value)
+								break;
+							};
+						};
+						row.appendChild(buttonEdit);
+						break;
+					default:
+						break;
+					};
+					table.appendChild(row);
+				};
+				table.className='table table-striped table-bordered table-hover';
+				container.appendChild(table);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
 	function deleteData(api,data) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
@@ -989,7 +973,7 @@
 	    </div>
 	    <ul id="mainMenu" class="nav navbar-nav">
 	      <li class="active"><a href="#" onclick="changeToHome()">Home</a></li>
-	      <li><a href="#">Page 1</a></li>
+	      <li><a href="#" onclick="changeToMealList()">Meal Lists</a></li>
 	      <li><a href="#" onclick="changeToIngredient()">Ingredients</a></li>
 	      <li><a href="#" onclick="changeToRecepie()">Recepies</a></li>
 	      <li id="settingsMenuLi"><a href="#" onclick="changeToSettings()">Settings</a></li>
