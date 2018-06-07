@@ -20,22 +20,16 @@ public class Recepie_Ingredient {
 	
 	@ManyToOne
 	//@PrimaryKeyJoinColumn(name="RECEPIE_ID", referencedColumnName = "ID")
-	@JoinColumn(name = "recepie_Id", updatable = false, insertable = false, referencedColumnName = "id")
+	@JoinColumn(name = "recepie_Id", updatable = false, insertable = false)
     private Recepie recepie;
 	
 	@ManyToOne
 	//@PrimaryKeyJoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID")
-	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false, referencedColumnName = "id")
+	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false)
     private Ingredient ingredient;
 	
-	public long getRecepieId() {
-		return recepie_Id;
-	}
 	public void setRecepieId(long recepie_Id) {
 		this.recepie_Id = recepie_Id;
-	}
-	public long getIngredientId() {
-		return ingredient_Id;
 	}
 	public void setIngredientId(long ingredient_Id) {
 		this.ingredient_Id = ingredient_Id;
@@ -47,13 +41,13 @@ public class Recepie_Ingredient {
 		this.ingredient_amount = ingredient_amount;
 	}
 	
-	public Recepie getRecepie() {
+	/*public Recepie getRecepie() {
 		return recepie;
 	}
 
 	public void setRecepie(Recepie recepie) {
 		this.recepie = recepie;
-	}
+	}*/
 	
 	public Ingredient getIngredient() {
 		return ingredient;
