@@ -6,16 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.catering.domain.Recepie;
-import com.project.catering.controller.Recepie_IngredientService;
 
 @Service
 @Transactional
 public class RecepieService {
 	@Autowired
 	private RecepieRepository recepieRepository;
-	
-	@Autowired
-	private Recepie_IngredientService recepie_IngredientRepository;
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public Recepie saveRecepie(Recepie recepie) {
@@ -39,7 +35,6 @@ public class RecepieService {
 	
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public void deleteRecepie(int id) {
-		recepie_IngredientRepository.deleteRecepie_IngredientArray(recepie_IngredientRepository.getRecepie_IngredientByRecepie_id(id));
 		recepieRepository.delete(getRecepieById(id));
 	}
 	

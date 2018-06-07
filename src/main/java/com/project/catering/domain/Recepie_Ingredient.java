@@ -28,10 +28,22 @@ public class Recepie_Ingredient {
 	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false)
     private Ingredient ingredient;
 	
-	public void setRecepieId(long recepie_Id) {
+	/*public void setRecepieId(long recepie_Id) {
 		this.recepie_Id = recepie_Id;
 	}
 	public void setIngredientId(long ingredient_Id) {
+		this.ingredient_Id = ingredient_Id;
+	}*/
+	public long getRecepie_Id() {
+		return recepie_Id;
+	}
+	public void setRecepie_Id(long recepie_Id) {
+		this.recepie_Id = recepie_Id;
+	}
+	public long getIngredient_Id() {
+		return ingredient_Id;
+	}
+	public void setIngredient_Id(long ingredient_Id) {
 		this.ingredient_Id = ingredient_Id;
 	}
 	public double getIngredient_amount() {

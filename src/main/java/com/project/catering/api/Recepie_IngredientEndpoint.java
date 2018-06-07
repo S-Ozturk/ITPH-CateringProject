@@ -62,6 +62,14 @@ public class Recepie_IngredientEndpoint {
 		recepie_IngredientService.saveRecepie_Ingredient(recepie_Ingredient);
 	}
 	
+	/*@Path("/saveAll")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public void changeAllRecepie_Ingredient(Iterable<Recepie_Ingredient> recepie_Ingredient){
+		recepie_IngredientService.saveAllRecepie_Ingredient(recepie_Ingredient);
+	}*/
+	
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
