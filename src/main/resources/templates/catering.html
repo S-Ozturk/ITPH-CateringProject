@@ -188,9 +188,9 @@
 	};
 	
 	function postDummyRecepies() {
-		postData("recepie",'{"name":"Onion soup","unitType":"Bowl","recepieType":"Soup","caloriePerPortion":45,"portionPerRecepie":10}');
-		postData("recepie",'{"name":"French Fries","unitType":"Appetizer Plate","recepieType":"Fast Food","caloriePerPortion":75,"portionPerRecepie":12}');
-		postData("recepie",'{"name":"Meat Balls Coctail","unitType":"Lunch Plate","recepieType":"Main Dishes","caloriePerPortion":94,"portionPerRecepie":8}');		
+		postData("recepie",'{"name":"Onion soup","unitType":"Bowl","recepieType":"Soup","caloriePerPortion":45,"portionPerRecepie":10,"ingredients":{"ingredient_amount":1, "ingredientId":1, "recepieId":6},{"ingredient_amount":2,"ingredient_Id":2, "recepie_Id":6}}');
+		postData("recepie",'{"name":"French Fries","unitType":"Appetizer Plate","recepieType":"Fast Food","caloriePerPortion":75,"portionPerRecepie":12,"ingredients":[]}');
+		postData("recepie",'{"name":"French Fries 2","unitType":"Appetizer Plate","recepieType":"Fast Food","caloriePerPortion":75.0,"portionPerRecepie":12.0,"ingredients":[{"ingredient_Id":1,"ingredient_amount":1.2,"ingredient":{"id":1,"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}},{"ingredient_Id":2,"ingredient_amount":2.0,"ingredient":{"id":2,"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.4}},{"ingredient_Id":3,"ingredient_amount":3.0,"ingredient":{"id":3,"name":"Beef Meat Ball","type":"Meat","unitType":"gr","caloriePerUnit":0.15}}]}');		
 	};
 	
 	function postDummyMealLists() {
@@ -668,44 +668,41 @@
 	//Also Checks Recepie has any Ingredient(s)
 	function checkPostRecepie(putMode) {  
 		var checkboxs = document.getElementsByTagName("input");
-		var checkboxList = [] , checkboxListUnchecked = [];
-		var amountList =[];
+		var checkboxList = "" , checkboxListUnchecked = "";
 		for(var i = 0; i < checkboxs.length; i++) {
 		    if(checkboxs[i].type == "checkbox") {
 		    	if(checkboxs[i].checked == true) {
-		    		checkboxList.push(checkboxs[i].id); 
-		    		amountList.push(document.getElementById(checkboxs[i].id+"_input").value);
+		    		if(checkboxList.length < 1) {
+		    			checkboxList = checkboxList + '{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+		    		}else{
+		    			checkboxList = checkboxList + ',{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+		    		}
 		    	}else{
-		    		checkboxListUnchecked.push(checkboxs[i].id);
+		    		if(checkboxListUnchecked.length < 1) {
+		    			checkboxListUnchecked = checkboxListUnchecked + '{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+		    		}else{
+		    			checkboxListUnchecked = checkboxListUnchecked + ',{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+		    		}
 		    	};
 		    };
 		};
 		if(checkboxList.length >= 1){
-			var id_input = document.getElementById("id_input").innerHTML;
-			for(var i = 0; i < checkboxList.length; i++) {
-				if(putMode== true){
-					putData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
-				}else{
-					postData("recepie_ingredient",'{"recepieId":'+ id_input +',"ingredientId":'+ checkboxList[i] +',"ingredient_amount":'+ amountList[i] +'}');
-				}
-			};	
-			for(var i = 0; i < checkboxListUnchecked.length; i++) {
-				deleteData("recepie_ingredient",'[{"recepieId":'+ id_input +',"ingredientId":'+ checkboxListUnchecked[i] +'}]');
+			var name = document.getElementById("name_input").value;
+			var unitType = document.getElementById("unit_type_input").value;
+			var recepieType = document.getElementById("recepie_type_input").value;
+			var calorie = document.getElementById("calorie_per_portion_input").value;
+			var portion = document.getElementById("portion_per_recepie_input").value;
+			if(putMode== true){
+				//putData("recepie",'['+checkboxList+']');
+				//deleteData("recepie_ingredient",'[{"recepie_id":'+ id_input +',"ingredient_id":'+ checkboxListUnchecked[i] +'}]');
+			}else{
+				postData("recepie",'{"name":"'+name+'","unitType":"'+unitType+'","recepieType":"'+recepieType+'","caloriePerPortion":'+calorie+',"portionPerRecepie":'+portion+',"ingredients":['+ checkboxList +']}');
+
+				alert('{"name":"'+name+'","unitType":"'+unitType+'","recepieType":"'+recepieType+'","caloriePerPortion":'+calorie+',"portionPerRecepie":'+portion+',"ingredients":['+ checkboxList +']}');
 			}
 		}else{
 			alert("Please select 1 or more ingredients with amount for adding recepie");
 		};
-	};
-	
-	//Get's data for recepie from and converts to JSON Post Data
-	function postRecepie() {	
-		var name = document.getElementById("name_input").value;
-		var unitType = document.getElementById("unit_type_input").value;
-		var recepieType = document.getElementById("recepie_type_input").value;
-		var calorie = document.getElementById("calorie_per_portion_input").value;
-		var portion = document.getElementById("portion_per_recepie_input").value;
-		postData("recepie",'{"name":"'+name+'","unitType":"'+unitType+'","recepieType":"'+recepieType+'","caloriePerPortion":'+calorie+',"portionPerRecepie":'+portion+'}');
-		createIngredientsForRecepieForm();
 	};
 	
 	function addRecepie() {  
@@ -751,6 +748,7 @@
 			addEnterance("calorie_per_portion","Calorie Per Portion",null);
 			addEnterance("portion_per_recepie","Portion Per Recepie",null);
 		}
+		getIngredientsForRecepie("ingredient");
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
@@ -776,25 +774,13 @@
 			var textNode = document.createTextNode("Add Recepie");
 			var button = document.createElement("BUTTON");
 			button.id = "addRecepie";
-			button.onclick = postRecepie;
+			button.onclick = function(){checkPostRecepie(false)};
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
 		};
 		container.appendChild(div);
 		div.appendChild(divButton);
-	};
-	
-	function createIngredientsForRecepieForm() { 
-		var textNode = document.createTextNode("Save Ingredients");
-		var button = document.createElement("BUTTON");
-		button.onclick = function(){checkPostRecepie(false)};
-		button.className="btn btn-default";
-		button.appendChild(textNode);
-		var element = document.getElementById("addRecepie");
-		element.className = "btn btn-default disabled";
-		element.parentNode.appendChild(button);
-		getIngredientsForRecepie("ingredient");
 	};
 	
 	function getIngredientsForRecepie(api) {

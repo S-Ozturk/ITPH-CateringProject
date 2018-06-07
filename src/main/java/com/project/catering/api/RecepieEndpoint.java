@@ -1,5 +1,6 @@
 package com.project.catering.api;
 
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.catering.controller.RecepieService;
-import com.project.catering.domain.Ingredient;
+import com.project.catering.controller.Recepie_IngredientService;
 import com.project.catering.domain.Recepie;
 
 @Path("recepie")
@@ -24,6 +25,9 @@ public class RecepieEndpoint {
 	
 	@Autowired
 	private RecepieService recepieService;
+	
+	@Autowired
+	private Recepie_IngredientService recepie_IngredientService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -53,6 +57,7 @@ public class RecepieEndpoint {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response changeRecepie(Recepie recepie){
 		Recepie result = recepieService.saveRecepie(recepie);
+		if(recepie.getIngredients() != null) recepie_IngredientService.saveAllRecepie_Ingredient(recepie.getIngredients(), result.getId());
 		return Response.accepted(result.getId()).build();	
 	}
 	

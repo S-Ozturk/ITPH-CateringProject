@@ -18,6 +18,13 @@ public class Recepie_IngredientService {
 		return recepie_IngredientRepository.save(recepie_Ingredient);
 	}
 	
+	public void saveAllRecepie_Ingredient(Iterable<Recepie_Ingredient> recepie_Ingredient, long recepieId) {
+		for(Recepie_Ingredient ri : recepie_Ingredient) {
+			ri.setRecepie_Id(recepieId);
+			recepie_IngredientRepository.save(ri);
+		}
+	}
+	
 	//@PreAuthorize("isAuthenticated()")
 	public Iterable<Recepie_Ingredient> getAllRecepie_Ingredients(){
 		return recepie_IngredientRepository.findAll();

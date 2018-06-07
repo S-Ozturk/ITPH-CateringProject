@@ -1,19 +1,14 @@
 package com.project.catering.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
+
 import javax.persistence.OneToMany;
-
-
 
 @Entity
 public class Recepie {
@@ -73,8 +68,19 @@ public class Recepie {
 	public List<Recepie_Ingredient> getIngredients() {
 		return ingredients;
 	}
-	public void setIngredients(List<Recepie_Ingredient> ingredients) {
-		this.ingredients = ingredients;
-	}	
+	/*public void setIngredients(Iterable<Recepie_Ingredient> ingredients) {
+		System.out.println("working set ingredients");
+		if(ingredients!=null && this.id != 0) {
+			for(Recepie_Ingredient ri: ingredients) {
+				System.out.println(this.id + " - " + id + " - " + getId() + " - " + ri.getIngredient_Id() + " - " + ri.getIngredient_amount());
+				Recepie_Ingredient relation = new Recepie_Ingredient();
+				relation.setRecepie_Id(this.getId());
+				relation.setIngredient_Id(ri.getIngredient_Id());
+				relation.setIngredient_amount(ri.getIngredient_amount());
+			    this.ingredients.add(relation);
+			    System.out.println(ingredients);
+			}
+		}
+	}*/
 	
 }
