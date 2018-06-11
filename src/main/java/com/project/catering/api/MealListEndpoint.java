@@ -1,5 +1,7 @@
 package com.project.catering.api;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Component;
 import com.project.catering.controller.MealListService;
 import com.project.catering.controller.MealList_RecepieService;
 import com.project.catering.domain.MealList;
+import com.project.catering.domain.MealList_Recepie;
+import com.project.catering.domain.Recepie_Ingredient;
 
 @Path("meallist")
 @Component
@@ -66,6 +70,14 @@ public class MealListEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response updateMealList(MealList mealList){
+		if(mealList.getRecepies() != null) {
+			List<MealList_Recepie> oldRecepies = (List<MealList_Recepie>) mealListService.getMealListById(mealList.getId()).getRecepies();
+			for(MealList_Recepie i : mealList.getRecepies()) {
+				if(oldRecepies.contains(i)) oldRecepies.remove(i);	
+			}
+			mealList_RecepieService.deleteMealList_RecepieArray(oldRecepies);
+			mealList_RecepieService.updateAllMealList_Recepie(mealList.getRecepies());
+		}
 		MealList result = mealListService.saveMealList(mealList);
 		return Response.accepted(result.getId()).build();	
 	}

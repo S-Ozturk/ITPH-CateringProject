@@ -289,7 +289,7 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedIngredientsData("recepie_ingredient",myObj.id)
+			getSelectedMaterialsData("meallist",myObj.id)  //At Reusable Codes
 		}
 		else {
 			var textNode = document.createTextNode("Add Meal List");
@@ -336,9 +336,9 @@
 			var mealType = document.getElementById("meal_type_input").value;
 			var calorie = document.getElementById("calorie_per_person_input").value;
 			if(putMode== true){
-				putData("meallist",'{"id":'+ id +',"name":"'+name+'","mealType":"'+mealType+'","calorie_per_person_input":'+calorie+',"recepies":['+ checkboxList +']}');
+				putData("meallist",'{"id":'+ id +',"name":"'+name+'","mealType":"'+mealType+'","caloriePerPerson":'+calorie+',"recepies":['+ checkboxList +']}');
 			}else{
-				postData("meallist",'{"name":"'+name+'","mealType":"'+mealType+'","calorie_per_person_input":'+calorie+',"recepies":['+ checkboxList +']}');
+				postData("meallist",'{"name":"'+name+'","mealType":"'+mealType+'","caloriePerPerson":'+calorie+',"recepies":['+ checkboxList +']}');
 			}
 		}else{
 			alert("Please select 1 or more receipe(s) with amount for adding recepie");
@@ -412,7 +412,6 @@
 	function deleteMealList(id){
 		if(confirm("Want to delete?")) {
 			deleteData("meallist",id);
-			//deleteData('"recepie_ingredient/'+id+'/recepie/delete"',id);
 		}
 	};
 	//----------------Delete Meal List End-------------------
@@ -736,7 +735,7 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedIngredientsData("recepie",myObj.id)
+			getSelectedMaterialsData("recepie",myObj.id) //At Reusable Codes
 		}
 		else {
 			var textNode = document.createTextNode("Add Recepie");
@@ -807,36 +806,15 @@
 		xhttp.send();
 	}
 	
-	function getSelectedIngredientsData(api, id) {
-		var myObj, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myObj = JSON.parse(this.responseText);
-				myArr = myObj.ingredients;
-				if(myObj != "") {
-					alert("Ingredients for " + myObj.name + " recepie loading for editing");
-					//I need a delay, otherwise getting ingredients code working late
-				};
-				for(x in myArr){
-					document.getElementById(myArr[x].ingredient_Id).checked = true;
-					document.getElementById(myArr[x].ingredient_Id + "_input").value = myArr[x].ingredient_amount;
-				}
-			}
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single");
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-	
 	//------------------------------------------
 	//RECEPIES PAGE CODES END
 	//------------------------------------------	
 	
+	
+	
 	//------------------------------------------
 	//SETTINGS PAGE CODES START
 	//------------------------------------------	
-	
 			
 	function getAllUsers(){
 		if(document.getElementById("searchInput")==null ){
@@ -972,6 +950,11 @@
 	//SETTINGS PAGE CODES END
 	//------------------------------------------	
 	
+/*******************************************************/	
+	
+	//------------------------------------------//
+	//      R E U S A B L E    C O D E S        //
+	//------------------------------------------//
 	function getData(api) {
 		var myObj, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -981,27 +964,6 @@
 			}
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-	
-	// Get Just 1 object for editing
-	function getOneById(api,id) {
-		var myObj;
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				myObj = JSON.parse(this.responseText);
-				switch(api){
-				case "ingredient":
-					createIngredientForm(myObj);
-					break;
-				case "recepie":
-					createRecepieForm(myObj);
-				}
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
 	}
@@ -1028,6 +990,68 @@
 		xhttp.open("PUT", "http://localhost:8082/api/" + api, true);
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send(data);
+	}
+	
+	// Get Just 1 object for editing
+	function getOneById(api,id) {
+		var myObj;
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				switch(api){
+				case "ingredient":
+					createIngredientForm(myObj);
+					break;
+				case "recepie":
+					createRecepieForm(myObj);
+					break;
+				case "meallist":
+					createMealListForm(myObj);
+					break;
+				}
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single" );
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
+	function getSelectedMaterialsData(api, id) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				myObj = JSON.parse(this.responseText);
+				switch(api){
+				case "recepie":
+					myArr = myObj.ingredients;
+					if(myObj != "") {
+						alert("Ingredients for " + myObj.name + " recepie loading for editing");
+						//I need a delay, otherwise getting ingredients code working late
+					};
+					for(x in myArr){
+						document.getElementById(myArr[x].ingredient_Id).checked = true;
+						document.getElementById(myArr[x].ingredient_Id + "_input").value = myArr[x].ingredient_amount;
+					}
+					break;
+				case "meallist":
+					myArr = myObj.recepies;
+					if(myObj != "") {
+						alert("Recepies for " + myObj.name + " meal list loading for editing");
+						//I need a delay, otherwise getting ingredients code working late
+					};
+					for(x in myArr){
+						document.getElementById(myArr[x].recepie_Id).checked = true;
+						document.getElementById(myArr[x].recepie_Id + "_input").value = myArr[x].recepie_amount;
+					}
+					break;
+				}
+			}
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single");
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
 	}
 	
 	
