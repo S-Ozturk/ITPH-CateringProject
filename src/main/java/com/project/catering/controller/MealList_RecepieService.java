@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.catering.domain.MealList_Recepie;
+import com.project.catering.domain.Recepie_Ingredient;
 
 @Service
 @Transactional
@@ -18,11 +19,17 @@ public class MealList_RecepieService {
 		return mealList_RecepieRepository.save(mealList_Recepie);
 	}
 	
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public void saveAllMealList_Recepie(Iterable<MealList_Recepie> mealList_Recepie, long mealListId) {
 		for(MealList_Recepie ri : mealList_Recepie) {
 			ri.setMealList_Id(mealListId);
 			saveMealList_Recepie(ri);
 		}
+	}
+	
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
+	public void updateAllMealList_Recepie(Iterable<MealList_Recepie> mealList_Recepie) {
+		mealList_RecepieRepository.saveAll(mealList_Recepie);
 	}
 	
 	//@PreAuthorize("isAuthenticated()")
