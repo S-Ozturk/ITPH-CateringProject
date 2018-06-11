@@ -84,6 +84,7 @@ public class RecepieEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public void deleteRecepie(int recepieid){
+		recepie_IngredientService.deleteRecepie_IngredientArray(recepie_IngredientService.getRecepie_IngredientByRecepie_id(recepieid));
 		recepieService.deleteRecepie(recepieid);
 	}
 	
