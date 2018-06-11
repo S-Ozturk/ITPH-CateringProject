@@ -2,6 +2,7 @@ package com.project.catering.domain;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -20,7 +21,7 @@ public class Recepie {
 	private String name, unitType,recepieType;
 	private double caloriePerPortion, portionPerRecepie;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "recepie")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "recepie", orphanRemoval=true)
 	//@Fetch(FetchMode.SELECT)
 	//@JoinTable(name = "recepie_ingredient", joinColumns = @JoinColumn(name = "recepie_Id"), inverseJoinColumns = @JoinColumn(name = "id"))
     private List<Recepie_Ingredient> ingredients;

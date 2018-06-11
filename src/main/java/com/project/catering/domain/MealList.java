@@ -20,7 +20,7 @@ public class MealList {
 	private String name, mealType;
 	private double caloriePerPerson;
 	
-	@OneToMany(fetch = FetchType.EAGER , mappedBy = "mealList")
+	@OneToMany(fetch = FetchType.EAGER , mappedBy = "mealList", orphanRemoval=true)
     private List<MealList_Recepie> recepies;
     
 	public long getId() {
