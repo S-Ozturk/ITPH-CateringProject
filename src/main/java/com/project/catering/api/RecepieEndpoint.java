@@ -1,6 +1,8 @@
 package com.project.catering.api;
 
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Component;
 import com.project.catering.controller.RecepieService;
 import com.project.catering.controller.Recepie_IngredientService;
 import com.project.catering.domain.Recepie;
+import com.project.catering.domain.Recepie_Ingredient;
 
 @Path("recepie")
 @Component
@@ -65,6 +68,14 @@ public class RecepieEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response updateRecepie(Recepie recepie){
+		if(recepie.getIngredients() != null) {
+			List<Recepie_Ingredient> oldIngredients = (List<Recepie_Ingredient>) recepieService.getRecepieById(recepie.getId()).getIngredients();
+			for(Recepie_Ingredient i : recepie.getIngredients()) {
+				if(oldIngredients.contains(i)) oldIngredients.remove(i);	
+			}
+			recepie_IngredientService.deleteRecepie_IngredientArray(oldIngredients);
+			recepie_IngredientService.updateAllRecepie_Ingredient(recepie.getIngredients());
+		}
 		Recepie result = recepieService.saveRecepie(recepie);
 		return Response.accepted(result.getId()).build();	
 	}

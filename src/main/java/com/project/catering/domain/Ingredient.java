@@ -19,7 +19,7 @@ public class Ingredient {
 	private String name, type, unitType;
 	private double caloriePerUnit;
 
-	@OneToMany(fetch = FetchType.EAGER ,mappedBy = "ingredient")
+	@OneToMany(/*fetch = FetchType.EAGER ,*/mappedBy = "ingredient")
     private List<Recepie_Ingredient> recepies;
     
 	public long getId() {
