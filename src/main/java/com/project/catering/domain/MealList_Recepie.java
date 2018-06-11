@@ -14,7 +14,7 @@ public class MealList_Recepie {
 	private long mealList_Id;
 	
 	@Id
-	private long mealRecepie_Id;
+	private long recepie_Id;
 	
 	private int recepie_amount;
 	
@@ -24,19 +24,20 @@ public class MealList_Recepie {
 	
 	@ManyToOne
 	@JoinColumn(name = "mealRecepie_Id", updatable = false, insertable = false, referencedColumnName = "id")
-    private Recepie mealRecepie;
+    private Recepie recepie;
 	
-	public long getMealRecepie_Id() {
-		return mealRecepie_Id;
+	
+	public long getRecepie_Id() {
+		return recepie_Id;
 	}
-	public void setMealRecepie_Id(long mealRecepie_Id) {
-		this.mealRecepie_Id = mealRecepie_Id;
+	public void setRecepie_Id(long recepie_Id) {
+		this.recepie_Id = recepie_Id;
 	}
 	public Recepie getRecepie() {
-		return mealRecepie;
+		return recepie;
 	}
 	public void setRecepie(Recepie mealRecepie) {
-		this.mealRecepie = mealRecepie;
+		this.recepie = mealRecepie;
 	}
 	public MealList getMealList() {
 		return mealList;

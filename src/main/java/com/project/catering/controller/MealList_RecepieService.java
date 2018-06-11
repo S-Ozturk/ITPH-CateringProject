@@ -27,7 +27,7 @@ public class MealList_RecepieService {
 	public Iterable<MealList_Recepie> getMealList_RecepieByMealRecepie_Id(int search){
 		try {
 			long d = (long)(search);
-            return mealList_RecepieRepository.findByMealRecepie_Id(d);
+            return mealList_RecepieRepository.findByRecepie_Id(d);
         } catch (NumberFormatException e) {
     		return mealList_RecepieRepository.findAll();
         }

@@ -25,6 +25,10 @@ public class Recepie_IngredientService {
 		}
 	}
 	
+	public void updateAllRecepie_Ingredient(Iterable<Recepie_Ingredient> recepie_Ingredient) {
+		recepie_IngredientRepository.saveAll(recepie_Ingredient);
+	}
+	
 	//@PreAuthorize("isAuthenticated()")
 	public Iterable<Recepie_Ingredient> getAllRecepie_Ingredients(){
 		return recepie_IngredientRepository.findAll();

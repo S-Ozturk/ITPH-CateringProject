@@ -11,16 +11,16 @@ public class MealList_RecepieId implements Serializable{
 
 	private long mealList_Id;
 
-	private long mealRecepie_Id;
+	private long recepie_Id;
 	
 	public int hashCode() {
-	    return (int)(mealList_Id + mealRecepie_Id);
+	    return (int)(mealList_Id + recepie_Id);
 	  }
 
 	  public boolean equals(Object object) {
 	    if (object instanceof MealList_RecepieId) {
 	    	MealList_RecepieId otherId = (MealList_RecepieId) object;
-	      return (otherId.mealList_Id == this.mealList_Id) && (otherId.mealRecepie_Id == this.mealRecepie_Id);
+	      return (otherId.mealList_Id == this.mealList_Id) && (otherId.recepie_Id == this.recepie_Id);
 	    }
 	    return false;
 	  }
