@@ -23,7 +23,7 @@ public class MealList_Recepie {
     private MealList mealList;
 	
 	@ManyToOne
-	@JoinColumn(name = "mealRecepie_Id", updatable = false, insertable = false, referencedColumnName = "id")
+	@JoinColumn(name = "recepie_Id", updatable = false, insertable = false, referencedColumnName = "id")
     private Recepie recepie;
 	
 	
@@ -36,15 +36,15 @@ public class MealList_Recepie {
 	public Recepie getRecepie() {
 		return recepie;
 	}
-	public void setRecepie(Recepie mealRecepie) {
-		this.recepie = mealRecepie;
+	public void setRecepie(Recepie recepie) {
+		this.recepie = recepie;
 	}
-	public MealList getMealList() {
+	/*public MealList getMealList() {
 		return mealList;
 	}
 	public void setMealList(MealList mealList) {
 		this.mealList = mealList;
-	}
+	}*/
 	public long getMealList_Id() {
 		return mealList_Id;
 	}

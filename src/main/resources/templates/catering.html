@@ -194,8 +194,8 @@
 	};
 	
 	function postDummyMealLists() {
-		postData("meallist",'{"name":"Chicken + Rice + Salad","mealType":"Lunch","caloriePerPerson":1200}');
-		postData("meallist",'{"name":"Soup + Meat Balls + Fries + Desert","mealType":"Dinner","caloriePerPerson":2000}');
+		postData("meallist",'{"name":"Chicken + Rice + Salad","mealType":"Lunch","caloriePerPerson":1200,"recepies":[{"recepie_amount":1, "mealList_Id":9, "recepie_Id":6},{"recepie_amount":2, "mealList_Id":9, "recepie_Id":7},{"recepie_amount":4, "mealList_Id":9, "recepie_Id":8}]}');
+		postData("meallist",'{"name":"Soup + Meat Balls + Fries + Desert","mealType":"Dinner","caloriePerPerson":2000,"recepies":[{"recepie_amount":4, "mealList_Id":10, "recepie_Id":6},{"recepie_amount":2, "mealList_Id":10, "recepie_Id":8}]}');
 		postData("meallist",'{"name":"Sandwich + Basic Breakfast","mealType":"Breakfast","caloriePerPerson":900}');
 	};
 	
@@ -229,15 +229,6 @@
 			getListSorted("meallist",key,false,false,0);
 		document.getElementById("dropdownSort").value = key;
 		
-	};
-	
-	//Add New Meal List Function
-	function postMealList() {  
-		var name = document.getElementById("name_input").value;
-		var type = document.getElementById("meal_type_input").value;
-		var calorie = document.getElementById("calorie_per_person_input").value;
-		postData("meallist",'{"name":"'+name+'","mealType":"'+type+'","caloriePerPerson":'+calorie+'}');
-		createRecepiesForMealListForm();
 	};
 	
 	function addMealList() {  
@@ -279,16 +270,16 @@
 			addEnterance("meal_type","Meal Type",null);
 			addEnterance("calorie_per_person","Calorie Per Person",null);
 		}
+		getRecepiesForMealList("recepie");
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
 		var divButton = document.createElement("DIV");
 		divButton.className ="col-sm-offset-3 col-sm-8";
 		if(myObj != null){
-			getRecepiesForMealList("recepie");
 			var textNode = document.createTextNode("Save Changes");
 			var button = document.createElement("BUTTON");
-			button.onclick = putMealList;
+			button.onclick = function(){checkPostMealList(true)};
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
@@ -304,7 +295,7 @@
 			var textNode = document.createTextNode("Add Meal List");
 			var button = document.createElement("BUTTON");
 			button.id = "addMealList";
-			button.onclick = postMealList;
+			button.onclick = function(){checkPostMealList(false)};
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
@@ -312,49 +303,45 @@
 		container.appendChild(div);
 		div.appendChild(divButton);
 	};
-	
-	function createRecepiesForMealListForm() { 
-		var textNode = document.createTextNode("Save Recepies");
-		var button = document.createElement("BUTTON");
-		button.onclick = function(){checkPostMealList(false)};
-		button.className="btn btn-default";
-		button.appendChild(textNode);
-		var element = document.getElementById("addMealList");
-		element.className = "btn btn-default disabled";
-		element.parentNode.appendChild(button);
-		getRecepiesForMealList("recepie");
-	};
-	
+
 	//Add New Meal List Function
 	//Also Checks Meal List has any Recepie(s)
-	function checkPostMealList(putMode) {  
+		function checkPostMealList(putMode) {  
 		var checkboxs = document.getElementsByTagName("input");
-		var checkboxList = [] , checkboxListUnchecked = [];
-		var amountList =[];
+		var checkboxList = "";
 		for(var i = 0; i < checkboxs.length; i++) {
 		    if(checkboxs[i].type == "checkbox") {
-		    	if(checkboxs[i].checked == true) {
-		    		checkboxList.push(checkboxs[i].id); 
-		    		amountList.push(document.getElementById(checkboxs[i].id+"_input").value);
-		    	}else{
-		    		checkboxListUnchecked.push(checkboxs[i].id);
+		    	if(putMode== true){
+		    		var id = document.getElementById("id_input").value;
+			    	if(checkboxs[i].checked == true) {
+			    		if(checkboxList.length < 1) {
+			    			checkboxList = checkboxList + '{"recepie_Id":'+ checkboxs[i].id +',"recepie_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +',"mealList_Id":'+id+'}';
+			    		}else{
+			    			checkboxList = checkboxList + ',{"recepie_Id":'+ checkboxs[i].id +',"recepie_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +',"mealList_Id":'+id+'}';
+			    		}
+			    	};
+				}else{
+			    	if(checkboxs[i].checked == true) {
+			    		if(checkboxList.length < 1) {
+			    			checkboxList = checkboxList + '{"recepie_Id":'+ checkboxs[i].id +',"recepie_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+			    		}else{
+			    			checkboxList = checkboxList + ',{"recepie_Id":'+ checkboxs[i].id +',"recepie_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +'}';
+			    		}
+			    	};
 		    	};
 		    };
 		};
 		if(checkboxList.length >= 1){
-			var id_input = document.getElementById("id_input").innerHTML;
-			for(var i = 0; i < checkboxList.length; i++) {
-				if(putMode== true){
-					putData("meallist_recepie",'{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxList[i] +',"recepie_amount":'+ amountList[i] +'}');
-				}else{
-					postData("meallist_recepie",'{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxList[i] +',"recepie_amount":'+ amountList[i] +'}');
-				}
-			};	
-			for(var i = 0; i < checkboxListUnchecked.length; i++) {
-				deleteData("meallist_recepie",'[{"mealList_Id":'+ id_input +',"mealRecepie_Id":'+ checkboxListUnchecked[i] +'}]');
+			var name = document.getElementById("name_input").value;
+			var mealType = document.getElementById("meal_type_input").value;
+			var calorie = document.getElementById("calorie_per_person_input").value;
+			if(putMode== true){
+				putData("meallist",'{"id":'+ id +',"name":"'+name+'","mealType":"'+mealType+'","calorie_per_person_input":'+calorie+',"recepies":['+ checkboxList +']}');
+			}else{
+				postData("meallist",'{"name":"'+name+'","mealType":"'+mealType+'","calorie_per_person_input":'+calorie+',"recepies":['+ checkboxList +']}');
 			}
 		}else{
-			alert("Please select 1 or more reecepies with amount for adding meal list");
+			alert("Please select 1 or more receipe(s) with amount for adding recepie");
 		};
 	};
 	
@@ -438,16 +425,6 @@
 	
 	function editMealList(id) {  
 		getOneById("meallist",id);
-	}
-	
-	//Update Meal List Function
-	function putMealList() {  
-		var id = document.getElementById("id_input").value;
-		var name = document.getElementById("name_input").value;
-		var mealType = document.getElementById("meal_type_input").value;
-		var calorie = document.getElementById("calorie_per_person_input").value;
-		checkPostMealList(true);
-		putData("meallist",'{"id":"'+ id +'","name":"'+name+'","mealType":"'+mealType+'","caloriePerPerson":'+calorie+'}');
 	};
 	//-----------------Edit Meal List End--------------------
 	
@@ -658,7 +635,7 @@
 	//Also Checks Recepie has any Ingredient(s)
 	function checkPostRecepie(putMode) {  
 		var checkboxs = document.getElementsByTagName("input");
-		var checkboxList = "" , checkboxListUnchecked = "";
+		var checkboxList = "";
 		for(var i = 0; i < checkboxs.length; i++) {
 		    if(checkboxs[i].type == "checkbox") {
 		    	if(putMode== true){
@@ -668,12 +645,6 @@
 			    			checkboxList = checkboxList + '{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +',"recepie_Id":'+id+'}';
 			    		}else{
 			    			checkboxList = checkboxList + ',{"ingredient_Id":'+ checkboxs[i].id +',"ingredient_amount":'+ document.getElementById(checkboxs[i].id+"_input").value +',"recepie_Id":'+id+'}';
-			    		}
-			    	}else{
-			    		if(checkboxListUnchecked.length < 1) {
-			    			checkboxListUnchecked = checkboxListUnchecked + '{"ingredient_Id":'+ checkboxs[i].id +',"recepie_Id":'+id+'}';
-			    		}else{
-			    			checkboxListUnchecked = checkboxListUnchecked + ',{"ingredient_Id":'+ checkboxs[i].id +',"recepie_Id":'+id+'}';
 			    		}
 			    	};
 				}else{

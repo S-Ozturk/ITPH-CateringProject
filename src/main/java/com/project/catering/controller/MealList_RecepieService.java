@@ -18,6 +18,13 @@ public class MealList_RecepieService {
 		return mealList_RecepieRepository.save(mealList_Recepie);
 	}
 	
+	public void saveAllMealList_Recepie(Iterable<MealList_Recepie> mealList_Recepie, long mealListId) {
+		for(MealList_Recepie ri : mealList_Recepie) {
+			ri.setMealList_Id(mealListId);
+			saveMealList_Recepie(ri);
+		}
+	}
+	
 	//@PreAuthorize("isAuthenticated()")
 	public Iterable<MealList_Recepie> getAllMealList_Recepies(){
 		return mealList_RecepieRepository.findAll();

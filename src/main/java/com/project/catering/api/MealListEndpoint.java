@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.catering.controller.MealListService;
+import com.project.catering.controller.MealList_RecepieService;
 import com.project.catering.domain.MealList;
 
 @Path("meallist")
@@ -23,6 +24,9 @@ public class MealListEndpoint {
 	
 	@Autowired
 	private MealListService mealListService;
+	
+	@Autowired
+	private MealList_RecepieService mealList_RecepieService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -52,6 +56,9 @@ public class MealListEndpoint {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response changeMealList(MealList mealList){
 		MealList result = mealListService.saveMealList(mealList);
+		if(mealList.getRecepies() != null) {
+			mealList_RecepieService.saveAllMealList_Recepie(mealList.getRecepies(), result.getId());
+		}
 		return Response.accepted(result.getId()).build();	
 	}
 	

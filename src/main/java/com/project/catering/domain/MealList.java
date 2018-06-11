@@ -47,5 +47,12 @@ public class MealList {
 	public void setCaloriePerPerson(double caloriePerPerson) {
 		this.caloriePerPerson = caloriePerPerson;
 	}
+	public List<MealList_Recepie> getRecepies() {
+		return recepies;
+	}
+	public void setRecepies(List<MealList_Recepie> recepies) {
+		this.recepies = recepies;
+	}
+	
 	
 }
