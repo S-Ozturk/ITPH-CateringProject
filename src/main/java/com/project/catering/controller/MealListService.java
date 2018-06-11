@@ -13,9 +13,6 @@ import com.project.catering.controller.MealList_RecepieService;
 public class MealListService {
 	@Autowired
 	private MealListRepository mealListRepository;
-	
-	@Autowired
-	private MealList_RecepieService mealList_RecepieRepository;
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_CHEF')")
 	public MealList saveMealList(MealList mealList) {
