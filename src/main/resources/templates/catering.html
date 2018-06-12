@@ -270,7 +270,7 @@
 			addEnterance("meal_type","Meal Type",null);
 			addEnterance("calorie_per_person","Calorie Per Person",null);
 		}
-		getRecepiesForMealList("recepie");
+		getMaterialsData("recepie"); //At Reusable Codes (Gets Recepies for selection)
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
@@ -289,7 +289,7 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedMaterialsData("meallist",myObj.id)  //At Reusable Codes
+			getSelectedMaterialsData("meallist",myObj.id)  //At Reusable Codes (Gets selected Recepies)
 		}
 		else {
 			var textNode = document.createTextNode("Add Meal List");
@@ -344,65 +344,7 @@
 			alert("Please select 1 or more receipe(s) with amount for adding recepie");
 		};
 	};
-	
-	function getRecepiesForMealList(api) {
-		var myObj, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				var container = document.getElementById("Container");
-				var div = document.createElement("DIV");
-				div.className="row";
-				div.style="margin-top:10px";
-				var label = document.createElement("LABEL");
-				var textNode = document.createTextNode("Recepies");
-				label.appendChild(textNode);
-				label.className="col-sm-offset-1 col-sm-2 control-label";
-				div.appendChild(label);
-				var divIngredients = document.createElement("DIV");
-				divIngredients.className ="col-sm-8 table-bordered";
-				div.appendChild(divIngredients);
-				myObj = JSON.parse(this.responseText);
-				myObj = sortArray(myObj,"name", false);
-				for (x in myObj){
-					var divFormGroup = document.createElement("DIV");
-					divFormGroup.className = "col-sm-6 form-group";
-					var checkbox = document.createElement("INPUT");
-					checkbox.className = "col-sm-1";
-					checkbox.type = "checkbox";
-					checkbox.id = myObj[x].id;
-					divFormGroup.appendChild(checkbox);
-					var label = document.createElement("LABEL");
-					var labelText = document.createTextNode(myObj[x].name);
-					label.className = "col-sm-6";
-					label.appendChild(labelText);
-					divFormGroup.appendChild(label);
-					var divInputGroup = document.createElement("DIV");
-					divInputGroup.className = "col-sm-5 input-group";
-					var input = document.createElement("INPUT");
-					input.type = "text";
-					input.id = myObj[x].id + "_input";
-					input.className = "form-control";
-					input.placeholder = "Amount";
-					divInputGroup.appendChild(input);
-					var divInputGroupAddon = document.createElement("DIV");
-					divInputGroupAddon.className = "input-group-addon";
-					var addonText = document.createTextNode("x"+myObj[x].portionPerRecepie + " Portion");
-					divInputGroupAddon.appendChild(addonText);
-					divInputGroup.appendChild(divInputGroupAddon);
-					divFormGroup.appendChild(divInputGroup);
-					divIngredients.appendChild(divFormGroup);
-				};
-				container.appendChild(div);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-	
-	
-	
+
 	//---------------Delete Meal List Start-----------------
 	function getMealListsForDelete() { 
 		mealListDropdownCreate();
@@ -716,7 +658,7 @@
 			addEnterance("calorie_per_portion","Calorie Per Portion",null);
 			addEnterance("portion_per_recepie","Portion Per Recepie",null);
 		}
-		getIngredientsForRecepie("ingredient");
+		getMaterialsData("ingredient"); //At Reusable Codes (Gets Ingredients for selection)
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
@@ -735,7 +677,7 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedMaterialsData("recepie",myObj.id) //At Reusable Codes
+			getSelectedMaterialsData("recepie",myObj.id) //At Reusable Codes (Gets selected Ingredients)
 		}
 		else {
 			var textNode = document.createTextNode("Add Recepie");
@@ -749,62 +691,6 @@
 		container.appendChild(div);
 		div.appendChild(divButton);
 	};
-	
-	function getIngredientsForRecepie(api) {
-		var myObj, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				var container = document.getElementById("Container");
-				var div = document.createElement("DIV");
-				div.className="row";
-				div.style="margin-top:10px";
-				var label = document.createElement("LABEL");
-				var textNode = document.createTextNode("Ingredients");
-				label.appendChild(textNode);
-				label.className="col-sm-offset-1 col-sm-2 control-label";
-				div.appendChild(label);
-				var divIngredients = document.createElement("DIV");
-				divIngredients.className ="col-sm-8 table-bordered";
-				div.appendChild(divIngredients);
-				myObj = JSON.parse(this.responseText);
-				myObj = sortArray(myObj,"name", false);
-				for (x in myObj){
-					var divFormGroup = document.createElement("DIV");
-					divFormGroup.className = "col-sm-6 form-group";
-					var checkbox = document.createElement("INPUT");
-					checkbox.className = "col-sm-1";
-					checkbox.type = "checkbox";
-					checkbox.id = myObj[x].id;
-					divFormGroup.appendChild(checkbox);
-					var label = document.createElement("LABEL");
-					var labelText = document.createTextNode(myObj[x].name);
-					label.className = "col-sm-6";
-					label.appendChild(labelText);
-					divFormGroup.appendChild(label);
-					var divInputGroup = document.createElement("DIV");
-					divInputGroup.className = "col-sm-5 input-group";
-					var input = document.createElement("INPUT");
-					input.type = "text";
-					input.id = myObj[x].id + "_input";
-					input.className = "form-control";
-					input.placeholder = "Amount";
-					divInputGroup.appendChild(input);
-					var divInputGroupAddon = document.createElement("DIV");
-					divInputGroupAddon.className = "input-group-addon";
-					var addonText = document.createTextNode(myObj[x].unitType);
-					divInputGroupAddon.appendChild(addonText);
-					divInputGroup.appendChild(divInputGroupAddon);
-					divFormGroup.appendChild(divInputGroup);
-					divIngredients.appendChild(divFormGroup);
-				};
-				container.appendChild(div);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
 	
 	//------------------------------------------
 	//RECEPIES PAGE CODES END
@@ -955,6 +841,9 @@
 	//------------------------------------------//
 	//      R E U S A B L E    C O D E S        //
 	//------------------------------------------//
+	
+	
+	//For getting pure data
 	function getData(api) {
 		var myObj, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -968,6 +857,7 @@
 		xhttp.send();
 	}
 
+	//For posting data
 	function postData(api,data) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
@@ -980,6 +870,7 @@
 		xhttp.send(data);
 	}
 	
+	//For updating data
 	function putData(api,data) {
 		var xhttp = new XMLHttpRequest();
 		xhttp.onreadystatechange = function() {
@@ -991,6 +882,22 @@
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send(data);
 	}
+	
+	//For deleting data
+	function deleteData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 204) {
+				if(api != "recepie_ingredient" && api != "meallist_recepie" ){
+					var container = document.getElementById("Container");
+					container.innerHTML = "Item Deleted With Id: "+ data;
+				};
+			};
+		};
+		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	};
 	
 	// Get Just 1 object for editing
 	function getOneById(api,id) {
@@ -1017,6 +924,7 @@
 		xhttp.send();
 	}
 	
+	//Reading preselected materials (Ingredients for Recepie - Recepies for Meal List)
 	function getSelectedMaterialsData(api, id) {
 		var myObj, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -1054,6 +962,77 @@
 		xhttp.send();
 	}
 	
+	//For getting all materials for selection (Ingredients for Recepie - Recepies for Meal List)
+	function getMaterialsData(api) {
+		var myObj, x, txt = "";
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var container = document.getElementById("Container");
+				var div = document.createElement("DIV");
+				div.className="row";
+				div.style="margin-top:10px";
+				var label = document.createElement("LABEL");
+				switch(api){
+				case "recepie":
+					var textNode = document.createTextNode("Recepies");
+					break;
+				case "ingredient":
+					var textNode = document.createTextNode("Ingredients");
+					break;
+				}
+				label.appendChild(textNode);
+				label.className="col-sm-offset-1 col-sm-2 control-label";
+				div.appendChild(label);
+				var divIngredients = document.createElement("DIV");
+				divIngredients.className ="col-sm-8 table-bordered";
+				div.appendChild(divIngredients);
+				myObj = JSON.parse(this.responseText);
+				myObj = sortArray(myObj,"name", false);
+				for (x in myObj){
+					var divFormGroup = document.createElement("DIV");
+					divFormGroup.className = "col-sm-6 form-group";
+					var checkbox = document.createElement("INPUT");
+					checkbox.className = "col-sm-1";
+					checkbox.type = "checkbox";
+					checkbox.id = myObj[x].id;
+					divFormGroup.appendChild(checkbox);
+					var label = document.createElement("LABEL");
+					var labelText = document.createTextNode(myObj[x].name);
+					label.className = "col-sm-6";
+					label.appendChild(labelText);
+					divFormGroup.appendChild(label);
+					var divInputGroup = document.createElement("DIV");
+					divInputGroup.className = "col-sm-5 input-group";
+					var input = document.createElement("INPUT");
+					input.type = "text";
+					input.id = myObj[x].id + "_input";
+					input.className = "form-control";
+					input.placeholder = "Amount";
+					divInputGroup.appendChild(input);
+					var divInputGroupAddon = document.createElement("DIV");
+					divInputGroupAddon.className = "input-group-addon";
+					switch(api){
+					case "recepie":
+						var addonText = document.createTextNode("x"+myObj[x].portionPerRecepie + " Portion");
+						break;
+					case "ingredient":
+						var addonText = document.createTextNode(myObj[x].unitType);
+						break;
+					}
+					divInputGroupAddon.appendChild(addonText);
+					divInputGroup.appendChild(divInputGroupAddon);
+					divFormGroup.appendChild(divInputGroup);
+					divIngredients.appendChild(divFormGroup);
+				};
+				container.appendChild(div);
+			};
+		};
+		xhttp.open("GET", "http://localhost:8082/api/" + api);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send();
+	}
+	
 	
 	//Sorting function for different situations
 	function sortArray(array,key, sort) {
@@ -1067,6 +1046,8 @@
 	    return array;
 	};
 	
+	
+	//Gets sorted lists and creates get all - edit and delete tables
 	function getListSorted(api,key,sort, firstTime, mode) {
 		var myObj, myArr, x, txt = "";
 		var xhttp = new XMLHttpRequest();
@@ -1152,21 +1133,7 @@
 		xhttp.send();
 	}
 	
-	function deleteData(api,data) {
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 204) {
-				if(api != "recepie_ingredient" && api != "meallist_recepie" ){
-					var container = document.getElementById("Container");
-					container.innerHTML = "Item Deleted With Id: "+ data;
-				};
-			};
-		};
-		xhttp.open("DELETE", "http://localhost:8082/api/" + api, true);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send(data);
-	};
-	
+	//Limiting setting menu just for admin 
 	function generateHtmlMenu(){
 		if(![[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]]){
 			removeElement("settingsMenuLi");
