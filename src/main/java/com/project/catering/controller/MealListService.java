@@ -30,8 +30,8 @@ public class MealListService {
 	}
 	
 	//@PreAuthorize("isAuthenticated()")
-	public MealList getMealListById(long articleId) {
-		MealList obj = mealListRepository.findById(articleId).get();
+	public MealList getMealListById(long mealListId) {
+		MealList obj = mealListRepository.findById(mealListId).get();
 		return obj;
 	}	
 	
