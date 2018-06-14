@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class User {
@@ -23,6 +24,9 @@ public class User {
 	@ManyToOne
     @JoinColumn(name="ROLE_ID", nullable=false)
     private Role role;
+	
+	@OneToOne(mappedBy = "user")
+    private Customer customer;
     
     public Long getId() {
 		return id;

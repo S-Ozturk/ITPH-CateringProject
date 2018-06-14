@@ -11,4 +11,5 @@ import com.project.catering.domain.Role;
 public interface RoleRepository extends CrudRepository<Role, Long> {
 	List<Role> findByIdLike(Long search);
 	List<Role> findByNameContaining(String searchName);
+	Role findByName(String searchName);
 }

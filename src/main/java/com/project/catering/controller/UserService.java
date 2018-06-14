@@ -13,7 +13,7 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
@@ -23,7 +23,7 @@ public class UserService {
 		return userRepository.findAll();
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User getUserById(long userId) {
 		return userRepository.findById(userId).get();
 	}	

@@ -42,4 +42,9 @@ public class RoleService {
         	return roleRepository.findByNameContaining(search);
 	    }
 	}
+	
+	//@PreAuthorize("isAuthenticated()")
+	public Role getRoleCustomer(){
+    	return roleRepository.findByName("ROLE_CUSTOMER");
+	}
 }

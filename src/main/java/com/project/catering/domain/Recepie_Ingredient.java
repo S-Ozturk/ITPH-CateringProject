@@ -1,6 +1,5 @@
 package com.project.catering.domain;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -20,21 +19,13 @@ public class Recepie_Ingredient {
 	private double ingredient_amount;
 	
 	@ManyToOne
-	//@PrimaryKeyJoinColumn(name="RECEPIE_ID", referencedColumnName = "ID")
 	@JoinColumn(name = "recepie_Id", updatable = false, insertable = false)
     private Recepie recepie;
 	
 	@ManyToOne
-	//@PrimaryKeyJoinColumn(name="INGREDIENT_ID", referencedColumnName = "ID")
 	@JoinColumn(name = "ingredient_Id", updatable = false, insertable = false)
     private Ingredient ingredient;
 	
-	/*public void setRecepieId(long recepie_Id) {
-		this.recepie_Id = recepie_Id;
-	}
-	public void setIngredientId(long ingredient_Id) {
-		this.ingredient_Id = ingredient_Id;
-	}*/
 	public long getRecepie_Id() {
 		return recepie_Id;
 	}
@@ -53,14 +44,6 @@ public class Recepie_Ingredient {
 	public void setIngredient_amount(double ingredient_amount) {
 		this.ingredient_amount = ingredient_amount;
 	}
-	
-	/*public Recepie getRecepie() {
-		return recepie;
-	}
-
-	public void setRecepie(Recepie recepie) {
-		this.recepie = recepie;
-	}*/
 	
 	public Ingredient getIngredient() {
 		return ingredient;

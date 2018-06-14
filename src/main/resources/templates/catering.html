@@ -66,6 +66,13 @@
 		createMenuButton("button2","Add Dummy Meal Orders",postDummyOrderMeals);
 	};
 	
+	function changeToCustomer() {
+		clearMenuRow();
+		clearContainer();
+		createMenuButton("button1","Get All Customers",getAllCustomers);
+		createMenuButton("button2","Add Dummy Customers",postDummyCustomers);
+	};
+	
 	function clearContainer(){
 		document.getElementById("Container").innerHTML = '';
 	};
@@ -184,8 +191,8 @@
 	
 	function postDummyRoles() {
 		postData("settings/role",'{"name":"ROLE_USER"}');
+		postData("settings/role",'{"name":"ROLE_ADMIN"}');	
 		postData("settings/role",'{"name":"ROLE_CHEF"}');
-		postData("settings/role",'{"name":"ROLE_ADMIN"}');		
 		postData("settings/role",'{"name":"ROLE_CUSTOMER"}');	
 	};
 	
@@ -194,6 +201,8 @@
 		postData("settings/user",'{"username":"admin","firstName":"admin name","lastName":"admin last name","email":"admin@cateringproject.nl","password":"password","role":{"id":2}}');
 		postData("settings/user",'{"username":"chef","firstName":"chef name","lastName":"chef last name","email":"user@cateringproject.nl","password":"password","role":{"id":3}}');		
 	};
+	
+	
 	
 	function postDummyRecepies() {
 		postData("recepie",'{"name":"Onion soup","unitType":"Bowl","recepieType":"Soup","caloriePerPortion":45,"portionPerRecepie":10,"ingredients":[{"ingredient_amount":1, "ingredient_Id":1, "recepie_Id":6},{"ingredient_amount":2,"ingredient_Id":2, "recepie_Id":6}]}');
@@ -213,9 +222,47 @@
 		postData("ordermeal",'{"name": "Sevket","deliveryAdress": "leiden","orderDate": "2018-06-12","deliveryDate": "2018-06-13","minCalorie": 4000,"peopleAmount": 10,"mealLists": [{"id": 9},{"id": 10},{"id": 11}]}');
 	};
 	
+	function postDummyCustomers() {
+		postData("customer",'{"name":"asd","adress":"asdasd","phone":"06 252","user":{"id":5}}');
+		postData("customer",'{"name":"dsa","adress":"dsadsa","phone":"06 ","user":{"id":7}}');	
+	};
+	
 	//------------------------------------------
 	//DUMMY DATA CODES END - !! DELETE IN FINAL VERSION !!
 	//------------------------------------------
+	
+	//------------------------------------------
+	//CUSTOMER PAGE CODES START
+	//------------------------------------------	
+	
+	function getAllCustomers() {
+		orderMealDropdownCreate();
+		getListSorted("customer","name",false,true,0)
+	};
+	
+	function customerDropdownCreate(){
+		if(document.getElementById("dropdownSort")==null && document.getElementById("dropdownSortDesc")==null ){
+			creatOrderDropdown();
+			createSearchInput("customer");
+			dropdownSort.onchange = getAllCustomersSorted;
+			dropdownSortDesc.onchange = getAllCustomersSorted;
+		};
+	};
+	
+	function getAllCustomersSorted() {
+		var key = document.getElementById("dropdownSort").value;
+		var desc = document.getElementById("dropdownSortDesc").value;
+		if(desc=="Descending")
+			getListSorted("customer",key,true,false,0);
+		else
+			getListSorted("customer",key,false,false,0);
+		document.getElementById("dropdownSort").value = key;
+		
+	};
+	
+	//------------------------------------------
+	//CUSTOMER PAGE CODES END
+	//------------------------------------------	
 	
 	//------------------------------------------
 	//ORDER MEAL PAGE CODES START
@@ -1197,6 +1244,7 @@
 	    </div>
 	    <ul id="mainMenu" class="nav navbar-nav">
 	      <li class="active"><a href="#" onclick="changeToHome()">Home</a></li>
+	      <li><a href="#" onclick="changeToCustomer()">Customers</a></li>
 	      <li><a href="#" onclick="changeToOrderMeal()">Meal Orders</a></li>
 	      <li><a href="#" onclick="changeToMealList()">Meal Lists</a></li>
 	      <li><a href="#" onclick="changeToRecepie()">Recepies</a></li>
