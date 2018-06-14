@@ -48,8 +48,8 @@ public class IngredientService {
 	}
 	
 	//@PreAuthorize("isAuthenticated()")
-	public Ingredient getIngredientById(long articleId) {
-		Ingredient obj = ingredientRepository.findById(articleId).get();
+	public Ingredient getIngredientById(long ingredientId) {
+		Ingredient obj = ingredientRepository.findById(ingredientId).get();
 		return obj;
 	}
 }
