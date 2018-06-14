@@ -2,9 +2,7 @@ package com.project.catering.domain;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +18,7 @@ public class Ingredient {
 	private String name, type, unitType;
 	private double caloriePerUnit;
 
-	@OneToMany(/*fetch = FetchType.EAGER ,*/mappedBy = "ingredient")
+	@OneToMany(mappedBy = "ingredient")
     private List<Recepie_Ingredient> recepies;
     
 	public long getId() {

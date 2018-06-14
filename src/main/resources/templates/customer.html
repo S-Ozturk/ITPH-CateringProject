@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catering Project</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	//Adding New Recepie and Editing Menu
+	function createCustomerForm() { 
+		var container = document.getElementById("Container");
+		function addEnterance(id, title) {
+			var div = document.createElement("DIV");
+			div.className="row";
+			div.style="margin-top:10px";
+			var label = document.createElement("LABEL");
+			var textNode = document.createTextNode(title);
+			label.appendChild(textNode);
+			label.htmlFor = id+"Input";
+			label.className="col-sm-offset-1 col-sm-2 control-label";
+			div.appendChild(label);
+			var divInput = document.createElement("DIV");
+			divInput.className ="col-sm-8";
+			var input = document.createElement("INPUT");
+			input.className ="form-control";
+			input.id=id+"_input";
+			divInput.appendChild(input);
+			div.appendChild(divInput);
+			container.appendChild(div);
+		}
+		addEnterance("firstName","First Name");
+		addEnterance("lastName","Last Name");
+		addEnterance("email","E-Mail");
+		addEnterance("username","UserName");
+		addEnterance("password","Password");
+		addEnterance("name","Customer Name");
+		addEnterance("adress","Adress");
+		addEnterance("phone","Phone");
+		var div = document.createElement("DIV");
+		div.className="row";
+		div.style="margin-top:10px"
+		var divButton = document.createElement("DIV");
+		divButton.className ="col-sm-offset-3 col-sm-8";
+		var textNode = document.createTextNode("Submit");
+		var button = document.createElement("BUTTON");
+		button.onclick = checkCustomer;
+		button.className="btn btn-default";
+		button.appendChild(textNode);
+		divButton.appendChild(button);
+		container.appendChild(div);
+		div.appendChild(divButton);
+	};
+	
+	//For reading and preparing data for post
+	function checkCustomer(){
+		var name = document.getElementById("name_input").value;
+		var adress = document.getElementById("adress_input").value;
+		var phone = document.getElementById("phone_input").value;
+		var firstName = document.getElementById("firstName_input").value;
+		var lastName = document.getElementById("lastName_input").value;
+		var email = document.getElementById("email_input").value;
+		var username = document.getElementById("username_input").value;
+		var password = document.getElementById("password_input").value;
+		alert('{"name":"'+name+'","adress":"'+adress+'","phone":"'+phone+'","user":{"firstName":"'+firstName+'","lastName":"'+lastName+'","email":"'+email+'","username":"'+username+'","password":"'+password+'"}}');
+		if(name != null ||adress != null ||phone != null ||firstName != null ||lastName != null ||email != null ||username != null ||password != null){
+			postData("customer/add",'{"name":"'+name+'","adress":"'+adress+'","phone":"'+phone+'","user":{"firstName":"'+firstName+'","lastName":"'+lastName+'","email":"'+email+'","username":"'+username+'","password":"'+password+'"}}');
+		}else{
+			alert("Please fill all of the fields");
+		};
+	};
+	
+	//For posting data
+	function postData(api,data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+				document.getElementById("Container").innerHTML = this.responseText+" Item Added";
+			}
+		};
+		xhttp.open("POST", "http://localhost:8082/api/" + api, true);
+		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	};
+</script>
+</head>
+<body onload="createCustomerForm()">
+	<nav class="navbar navbar-default">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="#">Catering Project - Create New Customer Form</a>
+	    </div>
+	  </div>
+	</nav>
+	<div class="container-fluid">
+		<div id="menuRow" class="row">
+        </div>
+		<div id="Container" class="row">
+        </div>
+    </div>
+</body>
+</html>

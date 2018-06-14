@@ -13,6 +13,7 @@ import com.project.catering.api.RecepieEndpoint;
 import com.project.catering.api.Recepie_IngredientEndpoint;
 import com.project.catering.api.RoleEndpoint;
 import com.project.catering.api.UserEndpoint;
+import com.project.catering.api.CustomerEndpoint;
 
 
 
@@ -28,6 +29,6 @@ public class JerseyConfig extends ResourceConfig {
 		register(OrderMealEndpoint.class);
 		register(RoleEndpoint.class);
 		register(UserEndpoint.class);
-		
+		register(CustomerEndpoint.class);
 	}
 }
