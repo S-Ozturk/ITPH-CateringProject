@@ -64,7 +64,6 @@
 		var email = document.getElementById("email_input").value;
 		var username = document.getElementById("username_input").value;
 		var password = document.getElementById("password_input").value;
-		alert('{"name":"'+name+'","adress":"'+adress+'","phone":"'+phone+'","user":{"firstName":"'+firstName+'","lastName":"'+lastName+'","email":"'+email+'","username":"'+username+'","password":"'+password+'"}}');
 		if(name != null ||adress != null ||phone != null ||firstName != null ||lastName != null ||email != null ||username != null ||password != null){
 			postData("customer/add",'{"name":"'+name+'","adress":"'+adress+'","phone":"'+phone+'","user":{"firstName":"'+firstName+'","lastName":"'+lastName+'","email":"'+email+'","username":"'+username+'","password":"'+password+'"}}');
 		}else{

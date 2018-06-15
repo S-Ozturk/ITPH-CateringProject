@@ -23,7 +23,6 @@
 			createMenuButton("button3","Edit Ingredient",getIngredientsForEdit);
 			createMenuButton("button4","Delete Ingredient",getIngredientsForDelete);
 		};
-		createMenuButton("button5","Add Dummy Ingredient",postDummyIngredients);
 	};
 	
 	function changeToRecepie() {
@@ -35,16 +34,13 @@
 			createMenuButton("button3","Edit Recepie",getRecepiesForEdit);
 			createMenuButton("button4","Delete Recepie",getRecepiesForDelete);
 		};
-		createMenuButton("button5","Add Dummy Recepie",postDummyRecepies);
 	};
 	
 	function changeToSettings() {
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Users",getAllUsers);
-		createMenuButton("button2","Add Dummy Users",postDummyUsers);
 		createMenuButton("button3","Roles",getAllRoles);
-		createMenuButton("button4","Add Dummy Roles",postDummyRoles);
 	};
 	
 	function changeToMealList(){
@@ -56,21 +52,18 @@
 			createMenuButton("button3","Edit Meal List",getMealListsForEdit);
 			createMenuButton("button4","Delete Meal List",getMealListsForDelete);
 		};
-		createMenuButton("button5","Add Dummy Meal Lists",postDummyMealLists);
 	};
 	
 	function changeToOrderMeal() {
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Get All Meal Orders",getAllOrderMeals);
-		createMenuButton("button2","Add Dummy Meal Orders",postDummyOrderMeals);
 	};
 	
 	function changeToCustomer() {
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Get All Customers",getAllCustomers);
-		createMenuButton("button2","Add Dummy Customers",postDummyCustomers);
 	};
 	
 	function clearContainer(){
@@ -175,61 +168,6 @@
 		}
 		
 	};
-	
-	//------------------------------------------
-	//DUMMY DATA CODES START - !! DELETE IN FINAL VERSION !!
-	//------------------------------------------
-	
-	function postDummyIngredients() {
-		postData("ingredient",'{"name":"Onion","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.10}');
-		postData("ingredient",'{"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.40}');
-		postData("ingredient",'{"name":"Beef Meat Ball","type":"Meat","unitType":"gr","caloriePerUnit":0.15}');
-		postData("ingredient",'{"name":"Black Pepper","type":"Spice","unitType":"Piece","caloriePerUnit":0.01}');
-		postData("ingredient",'{"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}');
-		postData("ingredient",'{"name":"Silver Rice","type":"Rice","unitType":"gr","caloriePerUnit":0.08}');	
-	};
-	
-	function postDummyRoles() {
-		postData("settings/role",'{"name":"ROLE_USER"}');
-		postData("settings/role",'{"name":"ROLE_ADMIN"}');	
-		postData("settings/role",'{"name":"ROLE_CHEF"}');
-		postData("settings/role",'{"name":"ROLE_CUSTOMER"}');	
-	};
-	
-	function postDummyUsers() {
-		postData("settings/user",'{"username":"user","firstName":"user name","lastName":"user last name","email":"user@cateringproject.nl","password":"password","role":{"id":1}}');
-		postData("settings/user",'{"username":"admin","firstName":"admin name","lastName":"admin last name","email":"admin@cateringproject.nl","password":"password","role":{"id":2}}');
-		postData("settings/user",'{"username":"chef","firstName":"chef name","lastName":"chef last name","email":"user@cateringproject.nl","password":"password","role":{"id":3}}');		
-	};
-	
-	
-	
-	function postDummyRecepies() {
-		postData("recepie",'{"name":"Onion soup","unitType":"Bowl","recepieType":"Soup","caloriePerPortion":45,"portionPerRecepie":10,"ingredients":[{"ingredient_amount":1, "ingredient_Id":1, "recepie_Id":6},{"ingredient_amount":2,"ingredient_Id":2, "recepie_Id":6}]}');
-		postData("recepie",'{"name":"French Fries","unitType":"Appetizer Plate","recepieType":"Fast Food","caloriePerPortion":75,"portionPerRecepie":12,"ingredients":[]}');
-		postData("recepie",'{"name":"French Fries 2","unitType":"Appetizer Plate","recepieType":"Fast Food","caloriePerPortion":75.0,"portionPerRecepie":12.0,"ingredients":[{"ingredient_Id":1,"ingredient_amount":1.2,"ingredient":{"id":1,"name":"Black Pepper Grinded","type":"Spice","unitType":"gr","caloriePerUnit":0.01}},{"ingredient_Id":2,"ingredient_amount":2.0,"ingredient":{"id":2,"name":"Potato","type":"Vegetable","unitType":"Piece","caloriePerUnit":0.4}},{"ingredient_Id":3,"ingredient_amount":3.0,"ingredient":{"id":3,"name":"Beef Meat Ball","type":"Meat","unitType":"gr","caloriePerUnit":0.15}}]}');
-		postData("recepie",'{"name":"Onion soup","unitType":"Bowl","recepieType":"Soup","caloriePerPortion":45,"portionPerRecepie":10,"ingredients":[{"ingredient_amount":1, "ingredient_Id":1, "recepie_Id":6},{"ingredient_amount":2,"ingredient_Id":2, "recepie_Id":6}]}');
-	};
-	
-	function postDummyMealLists() {
-		postData("meallist",'{"name":"Chicken + Rice + Salad","mealType":"Lunch","caloriePerPerson":1200,"recepies":[{"recepie_amount":1, "mealList_Id":9, "recepie_Id":6},{"recepie_amount":2, "mealList_Id":9, "recepie_Id":7},{"recepie_amount":4, "mealList_Id":9, "recepie_Id":8}]}');
-		postData("meallist",'{"name":"Soup + Meat Balls + Fries + Desert","mealType":"Dinner","caloriePerPerson":2000,"recepies":[{"recepie_amount":4, "mealList_Id":10, "recepie_Id":6},{"recepie_amount":2, "mealList_Id":10, "recepie_Id":8}]}');
-		postData("meallist",'{"name":"Sandwich + Basic Breakfast","mealType":"Breakfast","caloriePerPerson":900}');
-		postData("meallist",'{"name":"Sandwich + Basic Breakfast","mealType":"Breakfast","caloriePerPerson":900}');
-	};
-	
-	function postDummyOrderMeals() {
-		postData("ordermeal",'{"name": "Sevket","deliveryAdress": "leiden","orderDate": "2018-06-12","deliveryDate": "2018-06-13","minCalorie": 4000,"peopleAmount": 10,"mealLists": [{"id": 9},{"id": 10},{"id": 11}]}');
-	};
-	
-	function postDummyCustomers() {
-		postData("customer",'{"name":"asd","adress":"asdasd","phone":"06 252","user":{"id":5}}');
-		postData("customer",'{"name":"dsa","adress":"dsadsa","phone":"06 ","user":{"id":7}}');	
-	};
-	
-	//------------------------------------------
-	//DUMMY DATA CODES END - !! DELETE IN FINAL VERSION !!
-	//------------------------------------------
 	
 	//------------------------------------------
 	//CUSTOMER PAGE CODES START
@@ -1250,6 +1188,7 @@
 	      <li><a href="#" onclick="changeToRecepie()">Recepies</a></li>
 	      <li><a href="#" onclick="changeToIngredient()">Ingredients</a></li>
 	      <li id="settingsMenuLi"><a href="#" onclick="changeToSettings()">Settings</a></li>
+	      <li><a href="#" onclick='postData("dummy","{}")'>DUMMY DATA</a></li> 
 	    </ul>
 	    <div class="navbar-right">
 	      	<form th:action="@{/logout}" method="post">

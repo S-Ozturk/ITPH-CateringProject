@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class OrderMeal {
@@ -29,6 +30,10 @@ public class OrderMeal {
 		      joinColumns=@JoinColumn(name="ORDER_MEAL_ID", referencedColumnName="ID"),
 		      inverseJoinColumns=@JoinColumn(name="MEAL_LIST_ID", referencedColumnName="ID"))
 	private List<MealList>  mealLists;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CUSTOMER_ID", nullable=false)
+    private Customer customer;
     
 	public long getId() {
 		return id;

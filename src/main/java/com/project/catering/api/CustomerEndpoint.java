@@ -48,7 +48,8 @@ public class CustomerEndpoint {
 		return Response.ok(customer).build();
 	}
 	
-	@Path("/{adress}/{name}/{phone}/add")
+	//Long version of add function can be deleted in final version
+	/*@Path("/{adress}/{name}/{phone}/add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -62,7 +63,7 @@ public class CustomerEndpoint {
 		customer.setUser(userService.getUserById(resultUser.getId()));
 		Customer result = customerService.saveCustomer(customer);
 		return Response.accepted(result.getId()).build();	
-	}
+	}*/
 	
 	@Path("/add")
 	@POST
@@ -72,7 +73,7 @@ public class CustomerEndpoint {
 		User user = customer.getUser();
 		user.setRole(roleService.getRoleCustomer());
 		User resultUser = userService.saveUser(user);
-		customer.setUser(userService.getUserById(resultUser.getId()));
+		customer.setUser(resultUser);
 		Customer result = customerService.saveCustomer(customer);
 		return Response.accepted(result.getId()).build();	
 	}
