@@ -13,7 +13,8 @@ public class RoleService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//removed temporary for dummy data 
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Role saveRole(Role role) {
 		return roleRepository.save(role);
 	}
@@ -23,7 +24,8 @@ public class RoleService {
 		return roleRepository.findAll();
 	}
 	
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	//removed temporary for dummy data 
+	//@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Role getRoleById(long roleId) {
 		return roleRepository.findById(roleId).get();
 	}	

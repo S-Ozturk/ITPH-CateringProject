@@ -1,11 +1,15 @@
 package com.project.catering.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -20,6 +24,9 @@ public class Customer {
 	@OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="USER_ID", nullable=false)
     private User user;
+	
+	@OneToMany(mappedBy = "customer")
+    private List<OrderMeal> orderMeals= new ArrayList<OrderMeal>();
     
     public Long getId() {
 		return id;
