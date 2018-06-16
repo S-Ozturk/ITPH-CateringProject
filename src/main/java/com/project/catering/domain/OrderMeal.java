@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class OrderMeal {
@@ -24,12 +25,8 @@ public class OrderMeal {
 	private Date orderDate, deliveryDate;
 	private int minCalorie, peopleAmount;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-		      name="ORDER_MEAL_MEAL_LIST",
-		      joinColumns=@JoinColumn(name="ORDER_MEAL_ID", referencedColumnName="ID"),
-		      inverseJoinColumns=@JoinColumn(name="MEAL_LIST_ID", referencedColumnName="ID"))
-	private List<MealList>  mealLists;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "orderMeal", orphanRemoval=true)
+    private List<OrderMeal_MealList> mealLists;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="CUSTOMER_ID", nullable=false)
@@ -77,11 +74,12 @@ public class OrderMeal {
 	public void setPeopleAmount(int peopleAmount) {
 		this.peopleAmount = peopleAmount;
 	}
-	public List<MealList> getMealLists() {
+	public List<OrderMeal_MealList> getMealLists() {
 		return mealLists;
 	}
-	public void setMealLists(List<MealList> mealLists) {
+	public void setMealLists(List<OrderMeal_MealList> mealLists) {
 		this.mealLists = mealLists;
 	}
+	
 
 }

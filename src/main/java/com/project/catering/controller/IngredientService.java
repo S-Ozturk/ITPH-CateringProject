@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.catering.domain.Ingredient;
+import com.project.catering.domain.Stock;
 
 @Service
 @Transactional
@@ -15,10 +16,18 @@ public class IngredientService {
 	
 	@Autowired
 	private Recepie_IngredientService recepie_IngredientRepository;
+	
+	@Autowired
+	private StockRepository stockRepository;
 
 	//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_NUTRITIONIST','ROLE_STOCKMANAGER')")
 	public Ingredient saveIngredient(Ingredient ingredient) {
-		return ingredientRepository.save(ingredient);
+		Ingredient result = ingredientRepository.save(ingredient);
+		Stock stock = new Stock();
+		stock.setAmount(0);
+		stock.setIngredient(result);
+		stockRepository.save(stock);
+		return result;
 	}
 	
 	//@PreAuthorize("isAuthenticated()")

@@ -30,7 +30,7 @@ public class UserService {
 	}	
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void deleteUser(Long id) {
+	public void deleteUser(long id) {
 		userRepository.delete(getUserById(id));
 	}
 	

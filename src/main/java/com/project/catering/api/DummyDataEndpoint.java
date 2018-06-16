@@ -109,9 +109,9 @@ public class DummyDataEndpoint {
 			System.out.println("ingredient - "+ ingredient.getName() + " - " + ingredient.getId());
 		};
 		
-		String recepieArr[][]= {{"Romige Kwark Stracciatella","Piece","Aperatief","225","1","8-1"},{"Filet American","Piece","Aperatief","225","10","10-150,9-40"},
-			{"Boiled Egg","Piece","Breakfast","78","1","11-1"},{"Chili Con Carne","Plate","Warm Meal","256","4","12-220,13-13,15-115,16-1,17-100"},
-			{"Silver Rice","Plate","Warm Meal","185","10","14-1000"}};
+		String recepieArr[][]= {{"Romige Kwark Stracciatella","Piece","Aperatief","225","1","8-1"},{"Filet American","Piece","Aperatief","225","10","12-150,10-40"},
+			{"Boiled Egg","Piece","Breakfast","78","1","14-1"},{"Chili Con Carne","Plate","Warm Meal","256","4","16-220,18-13,22-115,24-1,26-100"},
+			{"Silver Rice","Plate","Warm Meal","185","10","20-1000"}};
 		for(String[] arr:recepieArr) {
 			Recepie recepie = new Recepie();
 			recepie.setName(arr[0]);
@@ -132,8 +132,8 @@ public class DummyDataEndpoint {
 			System.out.println("recepie - "+ recepie.getName() + " - " + recepie.getId());
 		};
 
-		String MealListArr[][]= {{"Romige Kwark","Breakfast","225","18-1"},{"Filet American + Boiled Eggs","Lunch","303","19-1,20-2"},
-		{"Chili Con Carne + Silver Rice","Dinner","441","21-1,22-1"}};
+		String MealListArr[][]= {{"Romige Kwark","Breakfast","225","28-1"},{"Filet American + Boiled Eggs","Lunch","303","29-1,30-2"},
+		{"Chili Con Carne + Silver Rice","Dinner","441","31-1,32-1"}};
 		for(String[] arr:MealListArr) {
 			MealList mealList = new MealList();
 			mealList.setName(arr[0]);

@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Ingredient {
@@ -20,6 +21,9 @@ public class Ingredient {
 
 	@OneToMany(mappedBy = "ingredient")
     private List<Recepie_Ingredient> recepies;
+    
+    @OneToOne(mappedBy = "ingredient")
+    private Stock stock;
     
 	public long getId() {
 		return id;
@@ -50,5 +54,5 @@ public class Ingredient {
 	}
 	public void setCaloriePerUnit(double caloriePerUnit) {
 		this.caloriePerUnit = caloriePerUnit;
-	}
+	}	
 }
