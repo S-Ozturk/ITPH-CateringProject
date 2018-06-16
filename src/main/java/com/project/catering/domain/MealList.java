@@ -2,13 +2,11 @@ package com.project.catering.domain;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 
@@ -25,8 +23,8 @@ public class MealList {
 	@OneToMany(fetch = FetchType.EAGER , mappedBy = "mealList", orphanRemoval=true)
     private List<MealList_Recepie> recepies;
     
-    @ManyToMany(mappedBy="mealLists", cascade=CascadeType.ALL)
-    private List<OrderMeal> orderMeals;
+    @OneToMany(mappedBy = "mealList")
+    private List<OrderMeal_MealList> orderMeals;
     
 	public long getId() {
 		return id;

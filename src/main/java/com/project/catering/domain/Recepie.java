@@ -23,7 +23,7 @@ public class Recepie {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "recepie", orphanRemoval=true)
     private List<Recepie_Ingredient> ingredients;
     
-    @OneToMany( mappedBy = "recepie")
+    @OneToMany(mappedBy = "recepie")
     private List<MealList_Recepie> mealLists;
     
 	public long getId() {
