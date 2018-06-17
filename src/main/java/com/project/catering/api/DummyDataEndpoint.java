@@ -138,7 +138,7 @@ public class DummyDataEndpoint {
 			MealList mealList = new MealList();
 			mealList.setName(arr[0]);
 			mealList.setMealType(arr[1]);
-			mealList.setCaloriePerPerson(Double.parseDouble(arr[2]));
+			//mealList.setCaloriePerPerson(Double.parseDouble(arr[2]));
 			String [] recepies = arr[3].split(",");
 			MealList result = mealListService.saveMealList(mealList);
 			for(String recepie : recepies) {
@@ -151,8 +151,6 @@ public class DummyDataEndpoint {
 			}
 			System.out.println("mealList - "+ mealList.getName() + " - " + mealList.getId());
 		};
-		
-		//postData("customer",'{"name":"asd","adress":"asdasd","phone":"06 252","user":{"id":5}}');
 		
 		String CustomerArr[][]= {{"Dirk Schaap Co.","Bla Bla - Leiden","06 4670","Dirk","Schaap","dirkissuper","1234","dirk@itph.nl"}};
 		for(String[] arr:CustomerArr) {
@@ -177,21 +175,7 @@ public class DummyDataEndpoint {
 	};
 	
 };
-/*public Response addNewCustomer(Customer customer){
-		User user = customer.getUser();
-		user.setRole(roleService.getRoleCustomer());
-		User resultUser = userService.saveUser(user);
-		customer.setUser(userService.getUserById(resultUser.getId()));
-		Customer result = customerService.saveCustomer(customer);
-		return Response.accepted(result.getId()).build();	
-	}
-
-function postDummyOrderMeals() {
+/*function postDummyOrderMeals() {
 postData("ordermeal",'{"name": "Sevket","deliveryAdress": "leiden","orderDate": "2018-06-12","deliveryDate": "2018-06-13","minCalorie": 4000,"peopleAmount": 10,"mealLists": [{"id": 9},{"id": 10},{"id": 11}]}');
-};
-
-function postDummyCustomers() {
-postData("customer",'{"name":"asd","adress":"asdasd","phone":"06 252","user":{"id":5}}');
-postData("customer",'{"name":"dsa","adress":"dsadsa","phone":"06 ","user":{"id":7}}');	
 };
 */

@@ -18,7 +18,6 @@ public class MealList {
 	private long id;
 	
 	private String name, mealType;
-	private double caloriePerPerson;
 	
 	@OneToMany(fetch = FetchType.EAGER , mappedBy = "mealList", orphanRemoval=true)
     private List<MealList_Recepie> recepies;
@@ -44,18 +43,17 @@ public class MealList {
 	public void setMealType(String mealType) {
 		this.mealType = mealType;
 	}
-	public double getCaloriePerPerson() {
-		return caloriePerPerson;
-	}
-	public void setCaloriePerPerson(double caloriePerPerson) {
-		this.caloriePerPerson = caloriePerPerson;
-	}
 	public List<MealList_Recepie> getRecepies() {
 		return recepies;
 	}
 	public void setRecepies(List<MealList_Recepie> recepies) {
 		this.recepies = recepies;
 	}
-	
-	
+	public double getCaloriePerPerson() {
+		double sum = 0;
+		for (MealList_Recepie mr : recepies) {
+			sum += mr.getRecepie_amount() * mr.getRecepie().getCaloriePerPortion();
+		}
+		return sum;
+	}	
 }

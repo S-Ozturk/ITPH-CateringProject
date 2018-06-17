@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.catering.domain.MealList;
+import com.project.catering.domain.MealList_Recepie;
 import com.project.catering.controller.MealList_RecepieService;
 
 @Service

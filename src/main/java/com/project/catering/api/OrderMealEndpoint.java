@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.catering.controller.OrderMealService;
+import com.project.catering.controller.OrderMeal_MealListService;
+import com.project.catering.domain.MealList;
 import com.project.catering.domain.OrderMeal;
 
 @Path("ordermeal")
@@ -22,6 +24,9 @@ public class OrderMealEndpoint {
 	
 	@Autowired
 	private OrderMealService orderMealService;
+	
+	@Autowired
+	private OrderMeal_MealListService orderMeal_MealListService;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -35,6 +40,9 @@ public class OrderMealEndpoint {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response changeOrderMeal(OrderMeal orderMeal){
 		OrderMeal result = orderMealService.saveOrderMeal(orderMeal);
+		if(orderMeal.getMealLists() != null) {
+			orderMeal_MealListService.saveAllOrderMeal_MealList(orderMeal.getMealLists(), result.getId());
+		}
 		return Response.accepted(result.getId()).build();	
 	}
 	
