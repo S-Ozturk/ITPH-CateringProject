@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -80,6 +79,5 @@ public class OrderMeal {
 	public void setMealLists(List<OrderMeal_MealList> mealLists) {
 		this.mealLists = mealLists;
 	}
-	
 
 }

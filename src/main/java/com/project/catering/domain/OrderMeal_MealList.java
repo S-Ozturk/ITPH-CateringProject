@@ -17,6 +17,7 @@ public class OrderMeal_MealList {
 	private long mealList_Id;
 	
 	private int mealList_amount;
+	private boolean cooked;
 	
 	@ManyToOne
 	@JoinColumn(name = "orderMeal_Id", updatable = false, insertable = false)
@@ -44,12 +45,17 @@ public class OrderMeal_MealList {
 	public void setMealList_amount(int mealList_amount) {
 		this.mealList_amount = mealList_amount;
 	}
-	
 	public MealList getMealList() {
 		return mealList;
 	}
-
 	public void setMealList(MealList mealList) {
 		this.mealList = mealList;
 	}
+	public boolean isCooked() {
+		return cooked;
+	}
+	public void setCooked(boolean cooked) {
+		this.cooked = cooked;
+	}
+	
 }

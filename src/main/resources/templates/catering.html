@@ -62,6 +62,9 @@
 		clearMenuRow();
 		clearContainer();
 		createMenuButton("button1","Get All Meal Orders",getAllOrderMeals);
+		if([[${#httpServletRequest.isUserInRole("ROLE_ADMIN")}]] || [[${#httpServletRequest.isUserInRole("ROLE_CUSTOMER")}]]){
+			createMenuButton("button2","New Meal Order",addMealOrder);
+		};
 	};
 	
 	function changeToCustomer() {
@@ -247,6 +250,10 @@
 		document.getElementById("dropdownSort").value = key;
 		
 	};
+	
+	function addOrderMeal() {  
+		createOrderMealForm(null);
+	}
 	
 	//------------------------------------------
 	//ORDER MEAL PAGE CODES END
