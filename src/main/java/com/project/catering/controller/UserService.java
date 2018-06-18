@@ -10,6 +10,7 @@ import com.project.catering.domain.User;
 @Service
 @Transactional
 public class UserService {
+	
 	@Autowired
 	private UserRepository userRepository;
 

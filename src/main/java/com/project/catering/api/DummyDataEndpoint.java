@@ -132,14 +132,13 @@ public class DummyDataEndpoint {
 			System.out.println("recepie - "+ recepie.getName() + " - " + recepie.getId());
 		};
 
-		String MealListArr[][]= {{"Romige Kwark","Breakfast","225","28-1"},{"Filet American + Boiled Eggs","Lunch","303","29-1,30-2"},
-		{"Chili Con Carne + Silver Rice","Dinner","441","31-1,32-1"}};
+		String MealListArr[][]= {{"Romige Kwark","Breakfast","28-1"},{"Filet American + Boiled Eggs","Lunch","29-1,30-2"},
+		{"Chili Con Carne + Silver Rice","Dinner","31-1,32-1"}};
 		for(String[] arr:MealListArr) {
 			MealList mealList = new MealList();
 			mealList.setName(arr[0]);
 			mealList.setMealType(arr[1]);
-			//mealList.setCaloriePerPerson(Double.parseDouble(arr[2]));
-			String [] recepies = arr[3].split(",");
+			String [] recepies = arr[2].split(",");
 			MealList result = mealListService.saveMealList(mealList);
 			for(String recepie : recepies) {
 				MealList_Recepie mr = new MealList_Recepie();
