@@ -1056,74 +1056,66 @@
 		xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
 				var container = document.getElementById("Container");
-				var divLabelHeader = document.createElement("DIV");
-				divLabelHeader.className="row";
-				var divLabelHeaderLabel = document.createElement("LABEL");
-				container.appendChild(divLabelHeader);
 				var div = document.createElement("DIV");
 				div.className="row";
 				div.style="margin-top:10px";
 				var divHeaderMaterials = document.createElement("DIV");
-				divHeaderMaterials.className="col-sm-offset-3 col-sm-4 center";
+				divHeaderMaterials.className="col-sm-offset-1 col-sm-5 text-center";
 				var divHeaderSelectedMaterials = document.createElement("DIV");
-				divHeaderSelectedMaterials.className="col-sm-4";
+				divHeaderSelectedMaterials.className="col-sm-5 text-center";
+				var divHeaderMaterialsHeader = document.createElement("H4");
+				var divHeaderSelectedMaterialsHeader = document.createElement("H4");
+				divHeaderMaterials.appendChild(divHeaderMaterialsHeader);
+				divHeaderSelectedMaterials.appendChild(divHeaderSelectedMaterialsHeader);
 				div.appendChild(divHeaderMaterials);
 				div.appendChild(divHeaderSelectedMaterials);
 				container.appendChild(div);
 				switch(api){
 				case "recepie":
-					var textNode = document.createTextNode("Recepies");
 					var divHeaderMaterialsText = document.createTextNode("Selected Recepie(s)");
 					var divHeaderSelectedMaterialsText = document.createTextNode("Recepie(s)");
 					break;
 				case "ingredient":
-					var textNode = document.createTextNode("Ingredients");
 					var divHeaderMaterialsText = document.createTextNode("Selected Ingredient(s)");
 					var divHeaderSelectedMaterialsText = document.createTextNode("Ingredient(s)");
 					break;
 				}
-				divHeaderMaterials.appendChild(divHeaderMaterialsText);
-				divHeaderSelectedMaterials.appendChild(divHeaderSelectedMaterialsText);
-				divLabelHeaderLabel.appendChild(textNode);
-				divLabelHeaderLabel.className="col-sm-12 control-label text-center";
-				divLabelHeader.appendChild(divLabelHeaderLabel);
+				divHeaderMaterialsHeader.appendChild(divHeaderMaterialsText);
+				divHeaderSelectedMaterialsHeader.appendChild(divHeaderSelectedMaterialsText);
 				var divSelectedMaterials = document.createElement("DIV");
 				divSelectedMaterials.className ="col-sm-offset-1 col-sm-5 table-bordered";
 				divSelectedMaterials.id="divSelectedMaterials";
 				divSelectedMaterials.style.minHeight = "100px"; 
-				divSelectedMaterials.ondrop=function(){drop(event)};
+				divSelectedMaterials.ondrop=function(){dropSelected(event)};
 				divSelectedMaterials.ondragover=function(){allowDrop(event)};
 				div.appendChild(divSelectedMaterials);
-				var unorderedSelectedList = document.createElement("UL"); 
-				//unorderedSelectedList.ondrop=function(){drop(event)};
-				//unorderedSelectedList.ondragover=function(){allowDrop(event)};
-				divSelectedMaterials.appendChild(unorderedSelectedList);
 				var divMaterials = document.createElement("DIV");
-				divMaterials.className ="col-sm-offset-1 col-sm-5 table-bordered";
-				divMaterials.draggable="true";
+				divMaterials.className ="col-sm-5 table-bordered";
+				divMaterials.id="divUnselectedMaterials";
+				divMaterials.ondrop=function(){dropUnselected(event)};
+				divMaterials.ondragover=function(){allowDrop(event)};
 				div.appendChild(divMaterials);
 				myObj = JSON.parse(this.responseText);
 				myObj = sortArray(myObj,"name", false);
-				var unorderedList = document.createElement("UL"); 
-				unorderedList.className="list-unstyled";
-				divMaterials.appendChild(unorderedList);
 				for (x in myObj){
-					var listItem = document.createElement("DIV"); 
-					listItem.draggable="true";
-					listItem.ondragstart=function(){drag(event)};
-					listItem.id = myObj[x].id + "_li"
+					var divItem = document.createElement("DIV"); 
+					divItem.className="row";
+					divItem.style="margin-top:5px; margin-bottom:5px";
+					divItem.draggable="true";
+					divItem.ondragstart=function(){drag(event)};
+					divItem.id = myObj[x].id + "_li"
 					var checkbox = document.createElement("INPUT");
 					checkbox.className = "col-sm-1";
 					checkbox.type = "checkbox";
 					checkbox.id = myObj[x].id;
-					listItem.appendChild(checkbox);
+					divItem.appendChild(checkbox);
 					var label = document.createElement("LABEL");
 					var labelText = document.createTextNode(myObj[x].name);
-					label.className = "col-sm-6";
+					label.className = "col-sm-7";
 					label.appendChild(labelText);
-					listItem.appendChild(label);
+					divItem.appendChild(label);
 					var divInputGroup = document.createElement("DIV");
-					divInputGroup.className = "col-sm-5 input-group";
+					divInputGroup.className = "col-sm-4 input-group";
 					var input = document.createElement("INPUT");
 					input.type = "text";
 					input.id = myObj[x].id + "_input";
@@ -1142,8 +1134,8 @@
 					}
 					divInputGroupAddon.appendChild(addonText);
 					divInputGroup.appendChild(divInputGroupAddon);
-					listItem.appendChild(divInputGroup);
-					unorderedList.appendChild(listItem);
+					divItem.appendChild(divInputGroup);
+					divMaterials.appendChild(divItem);
 				};
 				container.appendChild(div);
 			};
@@ -1152,80 +1144,6 @@
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
 	}
-	
-	/*	GetMaterialsData function that working without problem
-	function getMaterialsData(api) {
-		var myObj, x, txt = "";
-		var xhttp = new XMLHttpRequest();
-		xhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				var container = document.getElementById("Container");
-				var div = document.createElement("DIV");
-				div.className="row";
-				div.style="margin-top:10px";
-				var label = document.createElement("LABEL");
-				switch(api){
-				case "recepie":
-					var textNode = document.createTextNode("Recepies");
-					break;
-				case "ingredient":
-					var textNode = document.createTextNode("Ingredients");
-					break;
-				}
-				label.appendChild(textNode);
-				label.className="col-sm-offset-1 col-sm-2 control-label";
-				div.appendChild(label);
-				var divIngredients = document.createElement("DIV");
-				divIngredients.className ="col-sm-8 table-bordered";
-				div.appendChild(divIngredients);
-				myObj = JSON.parse(this.responseText);
-				myObj = sortArray(myObj,"name", false);
-				for (x in myObj){
-					var divFormGroup = document.createElement("DIV");
-					divFormGroup.className = "col-sm-6 form-group";
-					divFormGroup.id = myObj[x].id + "_FormGroup"
-					var checkbox = document.createElement("INPUT");
-					checkbox.className = "col-sm-1";
-					checkbox.type = "checkbox";
-					checkbox.id = myObj[x].id;
-					divFormGroup.appendChild(checkbox);
-					var label = document.createElement("LABEL");
-					var labelText = document.createTextNode(myObj[x].name);
-					label.className = "col-sm-6";
-					label.appendChild(labelText);
-					divFormGroup.appendChild(label);
-					var divInputGroup = document.createElement("DIV");
-					divInputGroup.className = "col-sm-5 input-group";
-					var input = document.createElement("INPUT");
-					input.type = "text";
-					input.id = myObj[x].id + "_input";
-					input.className = "form-control";
-					input.placeholder = "Amount";
-					divInputGroup.appendChild(input);
-					var divInputGroupAddon = document.createElement("DIV");
-					divInputGroupAddon.className = "input-group-addon";
-					switch(api){
-					case "recepie":
-						var addonText = document.createTextNode("x"+myObj[x].portionPerRecepie + " Portion");
-						break;
-					case "ingredient":
-						var addonText = document.createTextNode(myObj[x].unitType);
-						break;
-					}
-					divInputGroupAddon.appendChild(addonText);
-					divInputGroup.appendChild(divInputGroupAddon);
-					divFormGroup.appendChild(divInputGroup);
-					divIngredients.appendChild(divFormGroup);
-				};
-				container.appendChild(div);
-			};
-		};
-		xhttp.open("GET", "http://localhost:8082/api/" + api);
-		xhttp.setRequestHeader("Content-type", "application/json");
-		xhttp.send();
-	}
-	*/
-	
 	
 	//Sorting function for different situations
 	function sortArray(array,key, sort) {
@@ -1341,11 +1259,17 @@
 	    ev.dataTransfer.setData("text/html", ev.target.id);
 	}
 
-	function drop(ev) {
-		alert("drop works");
+	function dropUnselected(ev) {
 	    ev.preventDefault();
 	    var data = ev.dataTransfer.getData("text/html");
-	    ev.target.appendChild(document.getElementById(data));
+	    document.getElementById(data.substring(0,data.indexOf("_"))).checked = false;
+	    document.getElementById("divUnselectedMaterials").appendChild(document.getElementById(data));
+	}
+	function dropSelected(ev) {
+	    ev.preventDefault();
+	    var data = ev.dataTransfer.getData("text/html");
+	    document.getElementById(data.substring(0,data.indexOf("_"))).checked = true;
+	    document.getElementById("divSelectedMaterials").appendChild(document.getElementById(data));
 	}
 </script>
 </head>
