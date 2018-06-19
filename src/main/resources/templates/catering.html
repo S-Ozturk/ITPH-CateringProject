@@ -345,7 +345,6 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedMaterialsData("meallist",myObj.id)  //At Reusable Codes (Gets selected Recepies)
 		}
 		else {
 			var textNode = document.createTextNode("Add Meal List");
@@ -733,7 +732,6 @@
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
-			getSelectedMaterialsData("recepie",myObj.id) //At Reusable Codes (Gets selected Ingredients)
 		}
 		else {
 			var textNode = document.createTextNode("Add Recepie");
@@ -744,8 +742,8 @@
 			button.appendChild(textNode);
 			divButton.appendChild(button);
 		};
-		container.appendChild(div);
 		div.appendChild(divButton);
+		container.appendChild(div);
 	};
 	
 	//------------------------------------------
@@ -1022,27 +1020,23 @@
 				case "recepie":
 					myArr = myObj.ingredients;
 					if(myObj != "") {
-						alert("Ingredients for " + myObj.name + " recepie loading for editing");
-						//I need a delay, otherwise getting ingredients code working late
+						for(x in myArr){
+							document.getElementById(myArr[x].ingredient_Id).click();
+							document.getElementById(myArr[x].ingredient_Id + "_input").value = myArr[x].ingredient_amount;
+						};
 					};
-					for(x in myArr){
-						document.getElementById(myArr[x].ingredient_Id).checked = true;
-						document.getElementById(myArr[x].ingredient_Id + "_input").value = myArr[x].ingredient_amount;
-					}
 					break;
 				case "meallist":
 					myArr = myObj.recepies;
 					if(myObj != "") {
-						alert("Recepies for " + myObj.name + " meal list loading for editing");
-						//I need a delay, otherwise getting ingredients code working late
+						for(x in myArr){
+							document.getElementById(myArr[x].recepie_Id).click();
+							document.getElementById(myArr[x].recepie_Id + "_input").value = myArr[x].recepie_amount;
+						};
 					};
-					for(x in myArr){
-						document.getElementById(myArr[x].recepie_Id).checked = true;
-						document.getElementById(myArr[x].recepie_Id + "_input").value = myArr[x].recepie_amount;
-					}
 					break;
-				}
-			}
+				};
+			};
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api + "/" + id + "/single");
 		xhttp.setRequestHeader("Content-type", "application/json");
@@ -1103,11 +1097,12 @@
 					divItem.style="margin-top:5px; margin-bottom:5px";
 					divItem.draggable="true";
 					divItem.ondragstart=function(){drag(event)};
-					divItem.id = myObj[x].id + "_li"
+					divItem.id = myObj[x].id + "_div"
 					var checkbox = document.createElement("INPUT");
 					checkbox.className = "col-sm-1";
 					checkbox.type = "checkbox";
 					checkbox.id = myObj[x].id;
+					checkbox.onclick = function(){changeMaterialSelection(this.id)};
 					divItem.appendChild(checkbox);
 					var label = document.createElement("LABEL");
 					var labelText = document.createTextNode(myObj[x].name);
@@ -1121,15 +1116,18 @@
 					input.id = myObj[x].id + "_input";
 					input.className = "form-control";
 					input.placeholder = "Amount";
+					input.disabled=true;
 					divInputGroup.appendChild(input);
 					var divInputGroupAddon = document.createElement("DIV");
 					divInputGroupAddon.className = "input-group-addon";
 					switch(api){
 					case "recepie":
 						var addonText = document.createTextNode("x"+myObj[x].portionPerRecepie + " Portion");
+						var newApi = "meallist";
 						break;
 					case "ingredient":
 						var addonText = document.createTextNode(myObj[x].unitType);
+						var newApi = "recepie";
 						break;
 					}
 					divInputGroupAddon.appendChild(addonText);
@@ -1137,13 +1135,28 @@
 					divItem.appendChild(divInputGroup);
 					divMaterials.appendChild(divItem);
 				};
+				if(document.getElementById("id_input") != null )
+				getSelectedMaterialsData(newApi,document.getElementById("id_input").value);
 				container.appendChild(div);
 			};
 		};
 		xhttp.open("GET", "http://localhost:8082/api/" + api);
 		xhttp.setRequestHeader("Content-type", "application/json");
 		xhttp.send();
-	}
+	};
+	
+	//Manually changing selected items
+	function changeMaterialSelection(id){
+		var element = document.getElementById(id+"_div");
+		var checkBox = document.getElementById(id);
+		if (checkBox.checked == true){
+			divSelectedMaterials.appendChild(element);
+			document.getElementById(id+"_input").disabled=false;
+ 		} else {
+ 			divUnselectedMaterials.appendChild(element);
+ 			document.getElementById(id+"_input").disabled=true;
+ 		}
+	};
 	
 	//Sorting function for different situations
 	function sortArray(array,key, sort) {
@@ -1263,12 +1276,14 @@
 	    ev.preventDefault();
 	    var data = ev.dataTransfer.getData("text/html");
 	    document.getElementById(data.substring(0,data.indexOf("_"))).checked = false;
+	    document.getElementById(data.substring(0,data.indexOf("_"))+"_input").disabled=true;
 	    document.getElementById("divUnselectedMaterials").appendChild(document.getElementById(data));
 	}
 	function dropSelected(ev) {
 	    ev.preventDefault();
 	    var data = ev.dataTransfer.getData("text/html");
 	    document.getElementById(data.substring(0,data.indexOf("_"))).checked = true;
+	    document.getElementById(data.substring(0,data.indexOf("_"))+"_input").disabled=false;
 	    document.getElementById("divSelectedMaterials").appendChild(document.getElementById(data));
 	}
 </script>
