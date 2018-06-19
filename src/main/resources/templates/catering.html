@@ -1080,14 +1080,14 @@
 				divSelectedMaterials.className ="col-sm-offset-1 col-sm-5 table-bordered";
 				divSelectedMaterials.id="divSelectedMaterials";
 				divSelectedMaterials.style.minHeight = "100px"; 
-				divSelectedMaterials.ondrop=function(){dropSelected(event)};
-				divSelectedMaterials.ondragover=function(){allowDrop(event)};
+				divSelectedMaterials.ondrop=function(event){dropSelected(event)};
+				divSelectedMaterials.ondragover=function(event){allowDrop(event)};
 				div.appendChild(divSelectedMaterials);
 				var divMaterials = document.createElement("DIV");
 				divMaterials.className ="col-sm-5 table-bordered";
 				divMaterials.id="divUnselectedMaterials";
-				divMaterials.ondrop=function(){dropUnselected(event)};
-				divMaterials.ondragover=function(){allowDrop(event)};
+				divMaterials.ondrop=function(event){dropUnselected(event)};
+				divMaterials.ondragover=function(event){allowDrop(event)};
 				div.appendChild(divMaterials);
 				myObj = JSON.parse(this.responseText);
 				myObj = sortArray(myObj,"name", false);
@@ -1096,7 +1096,7 @@
 					divItem.className="row";
 					divItem.style="margin-top:5px; margin-bottom:5px";
 					divItem.draggable="true";
-					divItem.ondragstart=function(){drag(event)};
+					divItem.ondragstart=function(event){drag(event)};
 					divItem.id = myObj[x].id + "_div"
 					var checkbox = document.createElement("INPUT");
 					checkbox.className = "col-sm-1";
