@@ -546,8 +546,7 @@
 		divInput.className ="col-sm-8";
 		var form = document.createElement("FORM");
 		form.method = "POST";
-		form.enctype="multipart/form-data";
-		form.action="/upload";
+		form.enctype = "multipart/form-data";
 		var divForm = document.createElement("DIV");
 		divForm.className = "form-group";
 		var formInput = document.createElement("INPUT");
@@ -585,10 +584,12 @@
 			var textNode = document.createTextNode("Add Ingredient");
 			var button = document.createElement("BUTTON");
 			button.onclick = function(){
+				alert(formInput.value);
+				form.action = "/upload/" + document.getElementById("name_input").value + "_" + document.getElementById("type_input").value + "_" + document.getElementById("unit_type_input").value + "_" + document.getElementById("calorie_per_unit_input").value + "kcal.png";
 				form.submit();
 				postIngredient();
 			}
-			button.className="btn btn-default";
+		button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
 		};
