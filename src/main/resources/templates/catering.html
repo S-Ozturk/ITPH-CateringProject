@@ -533,6 +533,35 @@
 			addEnterance("unit_type","Unit Type",null);
 			addEnterance("calorie_per_unit","Calorie Per Unit",null);
 		}
+		//New code start
+		var div = document.createElement("DIV");
+		div.className="row";
+		div.style="margin-top:10px"
+		var label = document.createElement("LABEL");
+		var textNode = document.createTextNode("Upload Picture");
+		label.appendChild(textNode);
+		label.className="col-sm-offset-1 col-sm-2 control-label";
+		div.appendChild(label);
+		var divInput = document.createElement("DIV");
+		divInput.className ="col-sm-8";
+		var form = document.createElement("FORM");
+		form.method = "POST";
+		form.enctype="multipart/form-data";
+		form.action="/upload";
+		var divForm = document.createElement("DIV");
+		divForm.className = "form-group";
+		var formInput = document.createElement("INPUT");
+		formInput.type = "file";
+		formInput.name = "file";
+		formInput.className = "form-control-file";
+		formInput.id = "formInput";
+		formInput.accept=".png, .jpg, .jpeg, .png"
+		divForm.appendChild(formInput);
+		form.appendChild(divForm);
+		divInput.appendChild(form);
+		div.appendChild(divInput);
+		container.appendChild(div);
+		//New code end
 		var div = document.createElement("DIV");
 		div.className="row";
 		div.style="margin-top:10px"
@@ -555,7 +584,10 @@
 		else {
 			var textNode = document.createTextNode("Add Ingredient");
 			var button = document.createElement("BUTTON");
-			button.onclick = postIngredient;
+			button.onclick = function(){
+				form.submit();
+				postIngredient();
+			}
 			button.className="btn btn-default";
 			button.appendChild(textNode);
 			divButton.appendChild(button);
@@ -952,6 +984,18 @@
 		};
 		xhttp.open("POST", "http://localhost:8082/api/" + api, true);
 		xhttp.setRequestHeader("Content-type", "application/json");
+		xhttp.send(data);
+	}
+	
+	//For posting data
+	function postImage(data) {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 202) {
+			}
+		};
+		xhttp.open("POST", "http://localhost:8082/upload" , true);
+		xhttp.setRequestHeader("Content-type", "multipart/form-data");
 		xhttp.send(data);
 	}
 	
