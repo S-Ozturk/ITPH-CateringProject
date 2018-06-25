@@ -94,6 +94,68 @@ public class FileSystemStorageService implements StorageService {
             throw new StorageException("Failed to store file " + filename, e);
         }
     }
+    
+    @Override
+    public void store(MultipartFile file, String filename) {
+
+    	file.getOriginalFilename().replace(file.getOriginalFilename(), filename);
+
+        try {
+            if (file.isEmpty()) {
+                throw new StorageException("Failed to store empty file " + filename);
+            }
+            if (filename.contains("..")) {
+                // This is a security check
+                throw new StorageException(
+                        "Cannot store file with relative path outside current directory "
+                                + filename);
+            }
+            try (InputStream inputStream = file.getInputStream()) {
+            	BufferedImage originalImage = ImageIO.read(inputStream);
+            	
+            	  // Get image dimensions
+            	  int height = originalImage.getHeight();
+            	  int width = originalImage.getWidth();            	  
+            	  
+            	  // The image is already a square
+            	 /* if (height == width) {
+            	    return originalImage;
+            	  }*/
+            	  
+            	  // Compute the size of the square
+            	  int squareSize = (height > width ? width : height);
+            	  
+            	  // Coordinates of the image's middle
+            	  int xc = width / 2;
+            	  int yc = height / 2;
+            	  // Crop
+            	  BufferedImage croppedImage = originalImage.getSubimage(
+            	      xc - (squareSize / 2), // x coordinate of the upper-left corner
+            	      yc - (squareSize / 2), // y coordinate of the upper-left corner
+            	      squareSize,            // widht
+            	      squareSize             // height
+            	  );
+            	  
+            	  Image tmp = croppedImage.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            	  BufferedImage resized = new BufferedImage(50, 50, BufferedImage.TYPE_INT_ARGB);
+
+            	  Graphics2D g2d = resized.createGraphics();
+            	  g2d.drawImage(tmp, 0, 0, null);
+            	  g2d.dispose();
+            	  
+            	  ByteArrayOutputStream os = new ByteArrayOutputStream();
+            	  ImageIO.write(resized, "png", os);
+            	  InputStream cropped = new ByteArrayInputStream(os.toByteArray());
+            	  Files.copy(cropped, this.rootLocation.resolve(filename),
+                          StandardCopyOption.REPLACE_EXISTING);
+               /* Files.copy(inputStream, this.rootLocation.resolve(filename), ---ORJİNAL WORKİNG CODE---
+                    StandardCopyOption.REPLACE_EXISTING);*/
+            }
+        }
+        catch (IOException e) {
+            throw new StorageException("Failed to store file " + filename, e);
+        }
+    }
 
     @Override
     public Stream<Path> loadAll() {
